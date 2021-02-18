@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "mulgyeol",
+    "slug": "mulgyeol",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "splash": {
+        "mdpi": "./assets/images/splash/splash-mdpi.png",
+        "hdpi": "./assets/images/splash/splash-hdpi.png",
+        "xhdpi": "./assets/images/splash/splash-xhdpi.png",
+        "xxhdpi": "./assets/images/splash/splash-xxhdpi.png",
+        "xxxhdpi": "./assets/images/splash/splash-xxxhdpi.png",
+        "resizeMode": "cover"
+      }
+    },
+    "ios": {
+      "splash": {
+        "image": "./assets/images/splash/splash.png",
+        "resizeMode": "cover"
+      },
+      "supportsTablet": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

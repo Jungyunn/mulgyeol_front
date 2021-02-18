@@ -173,12 +173,8 @@ export default class signinAgency extends Component {
     }
 
     _isSameID = () => {
-        if (this.state.idMessage == '' && this.state.id == '' || this.state.verify_id == "") {
-            return (
-                <Text style={{ paddingLeft: 50 }}>중복확인 버튼을 눌러주세요</Text>
-            )
-        }
-        else if (this.state.idMessage == 'same') {
+        
+        if (this.state.idMessage == 'same') {
 
             return (
                 <Text style={{ paddingLeft: 50, fontWeight: "bold", color: "green" }}>사용할 수 있는 ID입니다</Text>
@@ -187,6 +183,10 @@ export default class signinAgency extends Component {
         else if (this.state.idMessage == 'diff') {
             return (
                 <Text style={{ paddingLeft: 50, fontWeight: "bold", color: "red" }}>사용할 수 없는 ID입니다</Text>
+            )
+        }else if (this.state.idMessage == '' && this.state.id == '' || this.state.verify_id == "") {
+            return (
+                <Text style={{ paddingLeft: 50 }}>중복확인 버튼을 눌러주세요</Text>
             )
         }
     }

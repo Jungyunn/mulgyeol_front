@@ -79,6 +79,7 @@ export default class mainPage extends React.Component {
             info_name:'',
             info_location:'',
             info_animal:'',
+            volunteerText:'',
         }
         this.t = setInterval(() => {
             this.setState({ count: this.state.count + 1 });
@@ -93,9 +94,6 @@ export default class mainPage extends React.Component {
             const value = await AsyncStorage.getItem('TOKEN');
             
             if (value != null) {
-                // We have data!!
-                //console.log(value);
-                //this.state.jwt = value;
                 this.setState({ jwt: value })
                 this.checkLogin()
 
@@ -139,7 +137,6 @@ export default class mainPage extends React.Component {
     componentDidMount() {
         this.getPermissionAsync();
         this.getVolunPost();
-        //this.getVolunPost();
         //Here is the Trick
         const { navigation } = this.props;
         //Adding an event listner om focus
@@ -148,7 +145,6 @@ export default class mainPage extends React.Component {
             this.setState({ count: 0 });
             this._retrieveData();
             this.getVolunPost();
-            //console.log(this.state.count)
         });
     }
 
@@ -200,10 +196,10 @@ export default class mainPage extends React.Component {
     }
 
     getShelterInfo(){
-        axios('http://3.34.119.63/shelter/'+this.state.shelterIdnum+'/')
+        var shelter_id = (jwt_decode(this.state.jwt)["shelter"]);
+        axios('http://3.34.119.63/shelter/'+shelter_id+'/')
             .then((response)=>{
                 if(response.status==200){
-                    //alert(response.data.shelter_name+"      "+response.data.id);
                     this.setState({
                         info_name: response.data.shelter_name,
                         info_location: response.data.loc_short,
@@ -233,11 +229,6 @@ export default class mainPage extends React.Component {
                 console.log(error)
             });
     }
-
-    //봉사모집글에 쓸 보호소 정보
-    // getShelterInfo(){
-    //     axios('http://3.34.119.63/shelter/'+id)
-    // }
 
 
     getPermissionAsync = async () => {
@@ -276,6 +267,7 @@ export default class mainPage extends React.Component {
     );
 
     _renderButton2 = (text, onPress) => (
+        
         <TouchableOpacity
             onPress={onPress} >
             <View style={styles.button}>
@@ -339,22 +331,69 @@ export default class mainPage extends React.Component {
             tagS.slice(7, 9) != "1," && tagS.slice(7, 8) != '2'
             //(data.filter(data => data.id != 1) && data.filter(data => data.id != 2))
         ) {
-            alert("모집상태는 1개만 선택할 수 있습니다.")
+            alert("모집상태는 1개만 선택할 수 있습니다.");
 
         }
         else if (tagS.slice(7, 8) == '2' && tagS.slice(32, 33) == '3') {
-            alert("'모집종료'상태에서는 '급구'를 선택할 수 없습니다.")
+            alert("'모집종료'상태에서는 '급구'를 선택할 수 없습니다.");
         }
         else {
+           
             this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
+            this.post_volunteer();
         }
     };
+
+    post_volunteer() {
+        let url = "http://3.34.119.63/volunteer/";
+        let formdata = new FormData();
+
+        //formdata.append("iamge", {uri:this.state.image, name:"1", type:'image/jpg'})
+        formdata.append("information",this.state.volunteerText)
+        formdata.append("tags","모집중")
+
+        fetch(url, {
+            method: 'post',
+            
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `jwt ${this.state.jwt}`
+            },
+            body: formdata,
+            // body: JSON.stringify({
+            //     "image":null,
+            //     "information":this.state.volunteerText,
+            //     "tags":"#모집중"
+            // }),
+            //redirect: 'follow',
+            //credentials: 'same-origin'
+
+        }).then((response) => {
+            if (response.status == 201) {
+                alert(response.status)
+                alert(response.data.message)
+               
+            }
+            else if (response.status == 400) {
+                alert(response.data.message)
+                alert(response.status)
+            }
+
+        }).catch((e) => {
+            console.log(e);
+            
+            this.setState({ currentMessage: e });
+        }).then(result => {console.log(result), alert(result)})
+    }
+
   
     _userRole = () => {
         var decoded = (jwt_decode(this.state.jwt)["user_role"]);
         var user_id = (jwt_decode(this.state.jwt)["shelter"]);
         
         console.log(decoded)
+
         if (decoded == "2") {
             this.setState({ showBongBtn: true, showAppyBtn: false, shelterIdnum: user_id })
             this.getShelterInfo();
@@ -363,10 +402,6 @@ export default class mainPage extends React.Component {
             this.setState({ showBongBtn: false, showAppyBtn: true })
         }
     }
-
-
-
-
 
     render() {
         //const { navigate } = this.props.navigation;
@@ -486,6 +521,7 @@ export default class mainPage extends React.Component {
                                             (
                                                 <Image
                                                     source={{ uri: item.image }}
+                                                    
                                                     style={{ height: 200, width: null, flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, }}
                                                 />
                                             )}
@@ -545,7 +581,7 @@ export default class mainPage extends React.Component {
 
 
                 <Modal isVisible={this.state.visibleModal === 1}>
-                    <KeyboardAvoidingScrollView stickyFooter={this._renderButton2('봉사자 모집하기', () => this.setState({ visibleModal: null }))}>
+                    <KeyboardAvoidingScrollView stickyFooter={this._renderButton2('봉사자 모집하기', () => this.CheckTag())}>
                         <View style={styles.fab2}>
                             {this._renderButton3('X', () => this.setState({ visibleModal: null, }))}
                         </View>
@@ -585,8 +621,8 @@ export default class mainPage extends React.Component {
                                 height={85}
                                 maxLength={75}
                                 style={{ textAlign: "center", padding: 10 }}
-                                onChangeText={(commuText => this.setState({ commuText }))}
-                                value={this.state.commuText}>
+                                onChangeText={(volunteerText => this.setState({ volunteerText }))}
+                                value={this.state.volunteerText}>
                             </TextInput>
 
                         </View>
@@ -598,7 +634,9 @@ export default class mainPage extends React.Component {
                 {this.state.showBongBtn ? (
                     <View style={styles.fab}>
                         {this._renderButton1('봉', () =>
-                            this.setState({ visibleModal: 1 }))}
+                            this.setState({ visibleModal: 1 }),
+                           
+                            )}
                     </View>
                 ) : null}
 

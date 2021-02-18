@@ -12,8 +12,8 @@ export default class Login extends Component {
         this.state = {
             //id: 'shunnyjang',
             //pw: 'shunnyjang',
-            id: 'mulgyeol',
-            pw: 'mulgyeol'
+            id: '',
+            pw: ''
         }
         this.onLogin = this.onLogin.bind(this);
     }
@@ -45,6 +45,7 @@ export default class Login extends Component {
     
                     );              
                     var decoded = (jwt_decode(result.token)["user_role"]);
+                    //alert(jwt_decode(result.token)["user_id"]);
                     console.log(decoded) 
                     if(decoded == 1){
                         this.props.navigation.navigate("myVolunteer")

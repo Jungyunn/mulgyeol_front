@@ -173,7 +173,6 @@ export default class signinAgency extends Component {
     }
 
     _isSameID = () => {
-        
         if (this.state.idMessage == 'same') {
 
             return (

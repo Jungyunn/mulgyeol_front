@@ -10,10 +10,8 @@ import {
     Image,
     Dimensions,
     AsyncStorage,
-
-
-
-} from 'react-native';
+} 
+from 'react-native';
 import { Card, CardItem, Thumbnail, Body, Left, Right, Button } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TagSelect } from 'react-native-tag-select';
@@ -27,6 +25,7 @@ import axios from 'axios'
 import jwt_decode from 'jwt-decode';
 import SyncStorage from 'sync-storage';
 import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scroll-view';
+
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 
@@ -76,7 +75,10 @@ export default class mainPage extends React.Component {
             showAppyBtn: true, //메인페이지에서 봉사신청 버튼 (로그인하고, 봉사자 에게만 보여야 함)
             posts: [],
             info: '',
-
+            shelterIdnum:'',
+            info_name:'',
+            info_location:'',
+            info_animal:'',
         }
         this.t = setInterval(() => {
             this.setState({ count: this.state.count + 1 });
@@ -84,11 +86,12 @@ export default class mainPage extends React.Component {
         clearInterval(this.t);
     }
 
-
+   
 
     _retrieveData = async () => {
         try {
             const value = await AsyncStorage.getItem('TOKEN');
+            
             if (value != null) {
                 // We have data!!
                 //console.log(value);
@@ -176,7 +179,7 @@ export default class mainPage extends React.Component {
 
                     //console.log("here"+this.state.feeds)
                     this._userRole();
-
+                  
                     //loading:true
                 }
                 else {
@@ -194,6 +197,21 @@ export default class mainPage extends React.Component {
                 });
                 console.log(error)
             });
+    }
+
+    getShelterInfo(){
+        axios('http://3.34.119.63/shelter/'+this.state.shelterIdnum+'/')
+            .then((response)=>{
+                if(response.status==200){
+                    //alert(response.data.shelter_name+"      "+response.data.id);
+                    this.setState({
+                        info_name: response.data.shelter_name,
+                        info_location: response.data.loc_short,
+                        info_animal:response.data.status,
+                    })
+                }
+            })
+            
     }
 
     getVolunPost() { //로그인을 안해도 글을 볼 수 있게 하기 위한 함수
@@ -215,6 +233,11 @@ export default class mainPage extends React.Component {
                 console.log(error)
             });
     }
+
+    //봉사모집글에 쓸 보호소 정보
+    // getShelterInfo(){
+    //     axios('http://3.34.119.63/shelter/'+id)
+    // }
 
 
     getPermissionAsync = async () => {
@@ -317,6 +340,7 @@ export default class mainPage extends React.Component {
             //(data.filter(data => data.id != 1) && data.filter(data => data.id != 2))
         ) {
             alert("모집상태는 1개만 선택할 수 있습니다.")
+
         }
         else if (tagS.slice(7, 8) == '2' && tagS.slice(32, 33) == '3') {
             alert("'모집종료'상태에서는 '급구'를 선택할 수 없습니다.")
@@ -325,14 +349,15 @@ export default class mainPage extends React.Component {
             this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
         }
     };
-
+  
     _userRole = () => {
         var decoded = (jwt_decode(this.state.jwt)["user_role"]);
-
+        var user_id = (jwt_decode(this.state.jwt)["shelter"]);
+        
         console.log(decoded)
         if (decoded == "2") {
-            this.setState({ showBongBtn: true, showAppyBtn: false })
-
+            this.setState({ showBongBtn: true, showAppyBtn: false, shelterIdnum: user_id })
+            this.getShelterInfo();
         }
         else if (decoded == "1") { //봉사자면 보이지 않게
             this.setState({ showBongBtn: false, showAppyBtn: true })
@@ -531,10 +556,11 @@ export default class mainPage extends React.Component {
                                 </View>
                             </View>
 
-                            <Text style={{ fontSize: 15, fontWeight: 'bold', paddingLeft: 10 }}> 보호소 이름 (데베에서) </Text>
+                            <Text style={{ fontSize: 15, fontWeight: 'bold', paddingLeft: 10 }}> {this.state.info_name} </Text>
+                          
                             <View style={{ flexDirection: "row", paddingBottom: 10, paddingLeft: 10 }}>
-                                <Text style={{ fontSize: 15 }}> 지역(데베에서) </Text>
-                                <Text style={{ fontSize: 15 }}> 동물 현황(데베에서) </Text>
+                                <Text style={{ fontSize: 15 }}> {this.state.info_location} </Text>
+                                <Text style={{ fontSize: 15 }}> {this.state.info_animal}</Text>
                             </View>
 
                             <View style={{ paddingLeft: 10 }}>
@@ -554,7 +580,7 @@ export default class mainPage extends React.Component {
                             <TextInput
                                 multiline
                                 numberOfLines={3}
-                                placeholder="커뮤니티에 올릴 소식을 적어주세요!"
+                                placeholder="봉사 모집 소개를 간략히 적어주세요!"
                                 placeholderTextColor="#3A4C7F"
                                 height={85}
                                 maxLength={75}

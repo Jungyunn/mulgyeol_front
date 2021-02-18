@@ -27,7 +27,6 @@ import agencyVolunList from './agencyVolunList' // 보호소 기준 봉사자 �
 import volunteerDate from './volunteerDate' // 봉사신청 페이지
 
 import aboutAgency from './aboutAgency' //시설소개
-import supportList from './supportList' //후원내역
 import Community from './Community' //각 보호소 별 커뮤니티
 
 

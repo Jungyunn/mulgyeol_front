@@ -38,7 +38,7 @@ export default class agencyVolunList extends Component {
     getVolunList() {
         var config = {
             method: 'get',
-            url: 'http://3.34.59.121:8000/volunteer/status/',
+            url: 'http://3.34.119.63/volunteer/status/',
             headers: { 
               'Authorization': `jwt ${this.state.jwt}`
             }

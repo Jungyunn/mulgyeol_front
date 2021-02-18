@@ -9,7 +9,7 @@ import axios from "axios";
 
 const screenHeight = Math.round(Dimensions.get('window').height);
 const idNum = 0;
-const url = "http://3.34.59.121:8000/"
+const url = "http://3.34.119.63/"
 
 
 
@@ -61,7 +61,7 @@ export default class signinAgency extends Component {
     }
 
     signUp() {
-        let url = "http://3.34.59.121:8000/shelter/";
+        let url = "http://3.34.119.63/shelter/";
 
         fetch(url, {
             method: 'POST',
@@ -139,7 +139,7 @@ export default class signinAgency extends Component {
     }
 
     f_getNum() {
-        axios.get(`http://3.34.59.121:8000/auth/?phone_number=${this.state.phoneNumber}&auth_number=${this.state.numCheck}`)
+        axios.get(`http://3.34.119.63/auth/?phone_number=${this.state.phoneNumber}&auth_number=${this.state.numCheck}`)
             .then(response => {
                 if (response.status == 200) {
                     console.log("success!");
@@ -156,7 +156,7 @@ export default class signinAgency extends Component {
 
     f_idCheck() { //id 중복여부 체크
 
-        axios.get(`http://3.34.59.121:8000/id/?id=${this.state.id}`)
+        axios.get(`http://3.34.119.63/id/?id=${this.state.id}`)
             .then(response => {
                 if (response.status == 200) {
                     console.log("available ID");

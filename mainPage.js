@@ -159,7 +159,7 @@ export default class mainPage extends React.Component {
     checkLogin() { //AsyncStorate.getItem('Token') 으로 하면 엉망임. async await을 해야 제대로 들어감
         var config = {
             method: 'get',
-            url: 'http://3.34.59.121:8000/volunteer',
+            url: 'http://3.34.119.63/volunteer',
             headers: {
                 'Authorization': `jwt ${this.state.jwt}`
             }
@@ -197,7 +197,7 @@ export default class mainPage extends React.Component {
     }
 
     getVolunPost() { //로그인을 안해도 글을 볼 수 있게 하기 위한 함수
-        axios('http://3.34.59.121:8000/volunteer')
+        axios('http://3.34.119.63/volunteer')
             .then((response) => {
                 if (response.status == 200) {
                     console.log("로그확인:");

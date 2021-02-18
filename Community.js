@@ -91,7 +91,7 @@ export default class Community extends Component {
     getCommunity() { //AsyncStorate.getItem('Token') 으로 하면 엉망임. async await을 해야 제대로 들어감
         var config = {
             method: 'get',
-            url: `http://3.34.59.121:8000/community/?shelter=${this.state.shelterNum}`,
+            url: `http://3.34.119.63/community/?shelter=${this.state.shelterNum}`,
             headers: {
                 'Authorization': `jwt ${this.state.jwt}`
             }
@@ -119,7 +119,7 @@ export default class Community extends Component {
             });
     }
     _watchCommunity() { //로그인 없이도 글을 볼 수 있게 함
-        axios(`http://3.34.59.121:8000/community/?shelter=${this.state.shelterNum}`)
+        axios(`http://3.34.119.63/community/?shelter=${this.state.shelterNum}`)
             .then((response) => {
                 if (response.status == 200) {
                     console.log("로그확인:");

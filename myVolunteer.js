@@ -40,7 +40,7 @@ export default class myVolunteer extends Component {
     getMyVolunList() {
         var config = {
             method: 'get',
-            url: 'http://3.34.59.121:8000/volunteer/list/',
+            url: 'http://3.34.119.63/volunteer/list/',
             headers: {
                 'Authorization': `jwt ${this.state.jwt}`
             }

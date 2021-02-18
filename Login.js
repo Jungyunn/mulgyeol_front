@@ -19,7 +19,7 @@ export default class Login extends Component {
     }
 
     onLogin() {
-        let url = "http://3.34.59.121:8000/";
+        let url = "http://3.34.119.63/";
 
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");

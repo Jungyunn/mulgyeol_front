@@ -5,7 +5,7 @@ import axios from "axios";
 
 const screenHeight = Math.round(Dimensions.get('window').height);
 const idNum = 0;
-const url = "http://3.34.59.121:8000/"
+const url = "http://3.34.119.63/"
 //fetch에서는 GET에 header를 쓸 수 없어서 axios를 사용함
 
 
@@ -35,7 +35,7 @@ export default class signinVolunteer extends Component {
     }
 
     signUp() {
-        let url = "http://3.34.59.121:8000/signup/";
+        let url = "http://3.34.119.63/signup/";
 
         fetch(url, {
             method: 'POST',
@@ -98,7 +98,7 @@ export default class signinVolunteer extends Component {
     }
 
     f_getNum() {
-        axios.get(`http://3.34.59.121:8000/auth/?phone_number=${this.state.phoneNumber}&auth_number=${this.state.numCheck}`)
+        axios.get(`http://3.34.119.63/auth/?phone_number=${this.state.phoneNumber}&auth_number=${this.state.numCheck}`)
             .then(response => {
                 if (response.status == 200) {
                     console.log("success!");
@@ -115,7 +115,7 @@ export default class signinVolunteer extends Component {
 
     f_idCheck() { //id 중복여부 체크
 
-        axios.get(`http://3.34.59.121:8000/id/?id=${this.state.id}`)
+        axios.get(`http://3.34.119.63/id/?id=${this.state.id}`)
             .then(response => {
                 if (response.status == 200) {
                     console.log("available ID");

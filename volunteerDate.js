@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment'
+import axios from 'axios';
 
 
 
@@ -14,9 +15,10 @@ export default class volunteerDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      shelter: "sample",
       selectedDate: null,
-
     };
+
     //moment.locale('ko');
     this.onDateChange = this.onDateChange.bind(this);
 
@@ -29,6 +31,56 @@ export default class volunteerDate extends Component {
     });
 
   }
+
+  getDateInfo(){
+    var config = {
+      method: 'get',
+      url: 'http://3.34.119.63/volunteer/apply/',
+      headers: {
+        'Authorization': `jwt ${this.state.jwt}`
+      }
+    };
+
+    axios(config)
+    .then((response) => {
+      if(response.status == 200){
+        console.log(response.data);
+      }else {
+        console.log("not 200");
+      }
+      
+    })
+    .catch((error) => {
+      console.log(error)
+    });
+  }
+
+  applyVolunteer(){
+    let url = 'http://3.34.119.63/volunteer/apply/';
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "shelter": this.state.shelter,
+        "date": this.state.selectedDate 
+      }),
+      redirect: 'follow',
+      credentials: 'same-origin'
+
+    })
+    .then((response) => {
+      if(response.status == 201){
+        console.log(response.data);
+      } 
+    })
+  }
+
+
+
+
 
   render() {
     const { selectedDate } = this.state;
@@ -59,7 +111,8 @@ export default class volunteerDate extends Component {
           <TouchableOpacity style={styles.applyBtn}
             onPress={() => alert(`${moment(this.state.selectedDate).format('YYYY-MM-DD')}`)}
           /*onPress={()=>this.props.navigation.navigate(" ")}*/>
-            <Text style={styles.applyBtnText} /* 신청하기 누르면 날짜 신청인원 +1 */>신청하기</Text>
+            <Text style={styles.applyBtnText} 
+            onPress={()=> this.applyVolunteer()}/* 신청하기 누르면 날짜 신청인원 +1 */>신청하기</Text>
           </TouchableOpacity>
         </View>
 

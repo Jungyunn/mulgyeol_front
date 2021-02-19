@@ -80,6 +80,7 @@ export default class mainPage extends React.Component {
             info_location:'',
             info_animal:'',
             volunteerText:'',
+            tag_size: ''
         }
         this.t = setInterval(() => {
             this.setState({ count: this.state.count + 1 });
@@ -304,6 +305,7 @@ export default class mainPage extends React.Component {
             )
         }
     }
+
     showdata() {
         return tagData.map(function (tag, i) {
             return (
@@ -317,7 +319,6 @@ export default class mainPage extends React.Component {
             )
         })
     }
-
 
     CheckTag = () => {
         
@@ -602,14 +603,24 @@ export default class mainPage extends React.Component {
                                     </Right>
                                 </CardItem>
                                 <CardItem>
-                                    <ScrollView
-                               
-                                        numberOfLines={2}
-                                    > 
-                                    <View style={{ flexDirection: 'row', }}>
-                                        {item.tags.map((tags) =>
+                                    <ScrollView                              
+                                        numberOfLines={2}>
+
+                                    <View style={{ flexDirection: 'row'}}>
+                                        {item.tags.slice(0, 4).map((tags) =>
                                             <View style={styles.tag_shape}>
-                                                <Text style={{ fontSize: 13.5, fontWeight: "300" }}>{tags["text"]}</Text>
+                                                <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
+                                                    {tags["text"]}
+                                                </Text>
+                                            </View>
+                                        )}
+                                    </View>
+                                    <View style={{ flexDirection: 'row'}}>
+                                        {item.tags.slice(4, 8).map((tags) =>
+                                            <View style={styles.tag_shape}>
+                                                <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
+                                                    {tags["text"]}
+                                                </Text>
                                             </View>
                                         )}
                                     </View>

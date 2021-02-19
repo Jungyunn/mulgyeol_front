@@ -170,7 +170,7 @@ export default class mainPage extends React.Component {
                     console.log("로그확인:", this.state.jwt);
                     //console.log("물결말고shelter번호:" , response.data[0].shelter_location);
                     //console.log(response.data);
-                    //this.setState({ posts: response.data })
+                    this.setState({ posts: response.data })
                     //console.log("shelter번호:", response.data[0].shelter);
 
                     //console.log("here"+this.state.feeds)
@@ -354,7 +354,7 @@ export default class mainPage extends React.Component {
     };
 
     post_volunteer() {
-        /*let url = "http://3.34.119.63/volunteer/";
+        let url = "http://3.34.119.63/volunteer/";
         const fileURL = this.state.image
 
         let formdata = new FormData();
@@ -364,7 +364,7 @@ export default class mainPage extends React.Component {
             name: 'photo.jpg'
         }
         
-        formdata.append("image", { uri: this.state.image, name: 'space.jpg', type: 'image/jpg' })
+        //formdata.append("image", { uri: this.state.image, name: 'space.jpg', type: 'image/jpg' })
         formdata.append("information",this.state.volunteerText)
         formdata.append("tags", taglabel)
 
@@ -390,8 +390,8 @@ export default class mainPage extends React.Component {
         }).catch((e) => {
             console.log(e);
         })
-        */
-   
+        
+   /*
         const fileURL = this.state.image
         let url = "http://3.34.119.63/volunteer/";
 
@@ -428,7 +428,7 @@ export default class mainPage extends React.Component {
                 console.log("shelterForm error:" + error)
                 alert(error)
             });
-
+*/
         
     }
 
@@ -552,7 +552,7 @@ export default class mainPage extends React.Component {
                         renderItem={({ item }) => (
                             <Card style={styles.cardStyle}>
                                 <TouchableOpacity onPress={() => {
-                                    //this.setState({shelterId:item.shelter})
+                                    this.setState({shelterId:item.shelter})
                                     SyncStorage.set('SHELTERID', item.shelter);
                                     this.props.navigation.navigate('aboutAgency')
                                 }}>
@@ -578,7 +578,7 @@ export default class mainPage extends React.Component {
                                         <Thumbnail source={require('./assets/icon.png')} />
                                         <Body>
                                             <View flexDirection="row">
-                                                <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
+                                                <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter}</Text>
 
                                                 {this.state.showAppyBtn ?
                                                     (<TouchableOpacity
@@ -588,8 +588,7 @@ export default class mainPage extends React.Component {
                                                     </TouchableOpacity>) : null}
 
                                             </View>
-
-                                            <Text>모집중</Text>
+                                                <Text>{item.tags[0]["text"].slice(1,)}</Text>
 
                                         </Body>
                                     </Left>
@@ -603,15 +602,18 @@ export default class mainPage extends React.Component {
                                     </Right>
                                 </CardItem>
                                 <CardItem>
-
-                                    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                                    <ScrollView
+                               
+                                        numberOfLines={2}
+                                    > 
+                                    <View style={{ flexDirection: 'row', }}>
                                         {item.tags.map((tags) =>
                                             <View style={styles.tag_shape}>
-                                                <Text style={{ fontSize: 13.5, fontWeight: "300" }}>{tags["name"]}</Text>
+                                                <Text style={{ fontSize: 13.5, fontWeight: "300" }}>{tags["text"]}</Text>
                                             </View>
                                         )}
                                     </View>
-
+                                    </ScrollView>
                                 </CardItem>
                                 <CardItem>
                                     <View style={styles.info}>
@@ -852,7 +854,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        
     },
     info: {
 

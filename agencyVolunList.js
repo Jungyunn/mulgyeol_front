@@ -14,9 +14,9 @@ export default class agencyVolunList extends Component {
     state = {
         
         image: null,
-        info_name:'',
-        
-        change:false,
+        //info_name:'',
+        //info_thumbnail,
+        //change:false,
     };
 
 
@@ -25,7 +25,7 @@ export default class agencyVolunList extends Component {
             const value = await AsyncStorage.getItem('TOKEN');
             if (value != null) {
                 this.setState({ jwt: value })
-                this.getShelterInfo()
+                //this.getShelterInfo()
                 this.getVolunList()
             }
             else {
@@ -36,7 +36,7 @@ export default class agencyVolunList extends Component {
         }
     };
 
-    
+  /*  
     getShelterInfo(){
         var shelter_id = (jwt_decode(this.state.jwt)["shelter"]);
         axios('http://3.34.119.63/shelter/'+shelter_id+'/')
@@ -50,7 +50,7 @@ export default class agencyVolunList extends Component {
             })
             
     }
-
+*/
     getVolunList() {
         var config = {
             method: 'get',

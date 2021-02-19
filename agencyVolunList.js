@@ -6,13 +6,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-
+import jwt_decode from 'jwt-decode';
 import axios from 'axios'
 
 export default class agencyVolunList extends Component {
 
     state = {
+        
         image: null,
+        info_name:'',
+        
+        change:false,
     };
 
 
@@ -20,10 +24,8 @@ export default class agencyVolunList extends Component {
         try {
             const value = await AsyncStorage.getItem('TOKEN');
             if (value != null) {
-                // We have data!!
-                //console.log(value);
-                //this.state.jwt = value;
                 this.setState({ jwt: value })
+                this.getShelterInfo()
                 this.getVolunList()
             }
             else {
@@ -34,6 +36,20 @@ export default class agencyVolunList extends Component {
         }
     };
 
+    
+    getShelterInfo(){
+        var shelter_id = (jwt_decode(this.state.jwt)["shelter"]);
+        axios('http://3.34.119.63/shelter/'+shelter_id+'/')
+            .then((response)=>{
+                if(response.status==200){
+                    this.setState({
+                        info_name: response.data.shelter_name,
+                        image:response.data.thumbnail,
+                    })
+                }
+            })
+            
+    }
 
     getVolunList() {
         var config = {
@@ -62,6 +78,9 @@ export default class agencyVolunList extends Component {
             console.log(error)
         });
     }
+
+    
+
 
     _signOut = async() =>{        
         await AsyncStorage.clear();
@@ -134,7 +153,7 @@ export default class agencyVolunList extends Component {
                             {this._imageLoad()}
                         </View>
                         <View>
-                            <Text style={{ textAlign: 'center', fontSize: 16 }}>물결 보호소</Text>
+                            <Text style={{ textAlign: 'center', fontSize: 16 }}>{this.state.info_name}</Text>
                             <TouchableOpacity
                                 title="Open URL with ReactNative.Linking"
                                 onPress={this._handleOpenWithLinking}

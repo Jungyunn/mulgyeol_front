@@ -29,7 +29,6 @@ import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scrol
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 
-
 const tagData = [
     { id: 1, label: '#모집중' },
     { id: 2, label: '#모집종료' },
@@ -45,6 +44,7 @@ const tagData = [
     { id: 12, label: '#기타봉사' },
 ];
 
+
 const seoul_gu = ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구",
     "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구",
     "양춘구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"]
@@ -56,7 +56,7 @@ const gyeong_gu = ["수원시", "성남시", "고양시", "용인시", "부천�
 
 const gyeongnam_gu = ["창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군",
     "창녕군", "고성군", "남해군", "하동군", "산청군", "함양군", "거창군", "합천군"]
-
+var taglabel="";
 
 
 export default class mainPage extends React.Component {
@@ -286,6 +286,7 @@ export default class mainPage extends React.Component {
 
     _imageLoad = () => {
         let { image } = this.state;
+        
         if (image != null) {
             return (
                 <TouchableOpacity style={{ width: 350, height: 250, borderWidth: 0.3, }} onPress={this._pickImage}>
@@ -319,56 +320,62 @@ export default class mainPage extends React.Component {
 
 
     CheckTag = () => {
-        var tagS = JSON.stringify(this.tag1.itemsSelected)
-
-
-        //tagS.slice(7,8):1
-        //tagS.slice(31,32)):2
-        //alert(tagS.slice(32,33))
-
-        //if ((data.filter(data => data.id == 1) && data.filter(data => data.id == 2)) ||
-        if (tagS.slice(7, 9) == "1," && tagS.slice(31, 32) == '2' ||
-            tagS.slice(7, 9) != "1," && tagS.slice(7, 8) != '2'
-            //(data.filter(data => data.id != 1) && data.filter(data => data.id != 2))
-        ) {
-            alert("모집상태는 1개만 선택할 수 있습니다.");
-
+        
+        if(this.tag1.itemsSelected.length == 0){
+            alert("'모집상태'를 선택해야합니다.");
+            return 0;
         }
-        else if (tagS.slice(7, 8) == '2' && tagS.slice(32, 33) == '3') {
-            alert("'모집종료'상태에서는 '급구'를 선택할 수 없습니다.");
+        for(var i =0 ; i<this.tag1.itemsSelected.length ; i++){
+            taglabel+=this.tag1.itemsSelected[i]["label"]+", "
         }
-        else {
-           
-            this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
-            this.post_volunteer();
+
+        if(this.tag1.itemsSelected.length!=1){
+            if(this.tag1.itemsSelected[0]["id"] == 1 && this.tag1.itemsSelected[1]["id"] == 2 ||
+                this.tag1.itemsSelected[0]["id"] != 1 && this.tag1.itemsSelected[0]["id"] != 2){
+                alert("모집상태는 1개만 선택할 수 있습니다.");
+            }
+            else if(this.tag1.itemsSelected[0]["id"] ==2 && this.tag1.itemsSelected[1]["id"] ==3){
+                alert("'모집종료'상태에서는 '급구'를 선택할 수 없습니다.");
+            }
+            else {
+                this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
+                this.post_volunteer();
+            }
+        }else{
+            if( this.tag1.itemsSelected[0]['id'] == 1 || this.tag1.itemsSelected[0]['id'] == 2){
+                this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
+                this.post_volunteer();
+                
+            }
+            else{
+                alert("'모집상태'를 선택해야합니다.");
+            }
         }
     };
 
     post_volunteer() {
-        let url = "http://3.34.119.63/volunteer/";
-        let formdata = new FormData();
+        /*let url = "http://3.34.119.63/volunteer/";
+        const fileURL = this.state.image
 
-        //formdata.append("iamge", {uri:this.state.image, name:"1", type:'image/jpg'})
+        let formdata = new FormData();
+        var photo = {
+            uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
+            type: 'image/jpg',
+            name: 'photo.jpg'
+        }
+        
+        formdata.append("image", { uri: this.state.image, name: 'space.jpg', type: 'image/jpg' })
         formdata.append("information",this.state.volunteerText)
-        formdata.append("tags","모집중")
+        formdata.append("tags", taglabel)
 
         fetch(url, {
             method: 'post',
-            
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `jwt ${this.state.jwt}`
             },
             body: formdata,
-            // body: JSON.stringify({
-            //     "image":null,
-            //     "information":this.state.volunteerText,
-            //     "tags":"#모집중"
-            // }),
-            //redirect: 'follow',
-            //credentials: 'same-origin'
-
         }).then((response) => {
             if (response.status == 201) {
                 alert(response.status)
@@ -382,9 +389,47 @@ export default class mainPage extends React.Component {
 
         }).catch((e) => {
             console.log(e);
-            
-            this.setState({ currentMessage: e });
-        }).then(result => {console.log(result), alert(result)})
+        })
+        */
+   
+        const fileURL = this.state.image
+        let url = "http://3.34.119.63/volunteer/";
+
+        var formData = new FormData();
+        var photo = {
+            uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
+            type: 'image/jpg',
+            name: 'photo.jpg'
+        }
+        //formData.append('image', photo);
+        formData.append("information",this.state.volunteerText)
+        formData.append("tags", taglabel)
+
+        var config = {
+            method: 'POST',
+            url: url,
+            headers: {
+                Accept: "application/json",
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `jwt ${this.state.jwt}`
+            },
+            data: formData
+        };
+        axios(config)
+            .then((response) => {
+                if (response.status == 201) {
+                   alert(response.status)
+                }
+                else {
+                    alert(response.status)
+                }
+            })
+            .catch((error) => {
+                console.log("shelterForm error:" + error)
+                alert(error)
+            });
+
+        
     }
 
   
@@ -593,7 +638,6 @@ export default class mainPage extends React.Component {
                             </View>
 
                             <Text style={{ fontSize: 15, fontWeight: 'bold', paddingLeft: 10 }}> {this.state.info_name} </Text>
-                          
                             <View style={{ flexDirection: "row", paddingBottom: 10, paddingLeft: 10 }}>
                                 <Text style={{ fontSize: 15 }}> {this.state.info_location} </Text>
                                 <Text style={{ fontSize: 15 }}> {this.state.info_animal}</Text>
@@ -609,7 +653,6 @@ export default class mainPage extends React.Component {
                                     ref={(tag1) => {
                                         this.tag1 = tag1;
                                     }}
-
                                 />
                             </View>
 

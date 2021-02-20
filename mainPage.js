@@ -28,6 +28,7 @@ import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scrol
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 const tagData = [
     { id: 1, label: '#모집중' },
@@ -562,13 +563,12 @@ export default class mainPage extends React.Component {
                                         {item.image == null ?
                                             (<Image
                                                 source={require('./assets/icon.png')}
-                                                style={{ height: 200, width: null, flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, }}
+                                                style={{ height: screenHeight/3, width: null, flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, }}
                                             />) :
                                             (
                                                 <Image
                                                     source={{ uri: item.image }}
-                                                    
-                                                    style={{ height: 200, width: null, flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, }}
+                                                    style={{ height: screenHeight/3, width: null, flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, }}
                                                 />
                                             )}
 
@@ -579,7 +579,7 @@ export default class mainPage extends React.Component {
                                         <Thumbnail source={require('./assets/icon.png')} />
                                         <Body>
                                             <View flexDirection="row">
-                                                <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter}</Text>
+                                                <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
 
                                                 {this.state.showAppyBtn ?
                                                     (<TouchableOpacity
@@ -602,10 +602,10 @@ export default class mainPage extends React.Component {
                                         <Text style={{ fontSize: 15, fontWeight: '400' }}> {item.shelter_status}</Text>
                                     </Right>
                                 </CardItem>
-                                <CardItem>
-                                    <ScrollView                              
-                                        numberOfLines={2}>
-
+                                
+                                <CardItem style={{marginTop:-(screenHeight/17), marginBottom:-10}}>
+                                    
+                                    <ScrollView>
                                     <View style={{ flexDirection: 'row'}}>
                                         {item.tags.slice(0, 4).map((tags) =>
                                             <View style={styles.tag_shape}>

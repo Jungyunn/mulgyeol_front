@@ -18,7 +18,7 @@ import SyncStorage from 'sync-storage';
 import { FlatList } from 'react-native-gesture-handler';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
-
+const screenHeight = Math.round(Dimensions.get('window').height);
 const seoul_gu = ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구",
     "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구",
     "양춘구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"]
@@ -684,13 +684,13 @@ const styles = StyleSheet.create({
 
     },
     shelterImage: {
-        width: 350,
-        height: 250,
+        width: screenWidth-15,
+        height: screenHeight/2.7,
         marginBottom: 30,
         borderWidth: 0.3,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 10
+
     }
 
 

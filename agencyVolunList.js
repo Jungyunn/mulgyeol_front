@@ -10,22 +10,20 @@ import jwt_decode from 'jwt-decode';
 import axios from 'axios'
 
 export default class agencyVolunList extends Component {
-
-    state = {
-        
-        image: null,
-        //info_name:'',
-        //info_thumbnail,
-        //change:false,
-    };
-
-
+    
+    constructor(props){
+        super(props);
+        this.state = {
+            image: null,
+            chat_url: '',
+        }
+    }
     _retrieveData = async () => {
         try {
             const value = await AsyncStorage.getItem('TOKEN');
             if (value != null) {
                 this.setState({ jwt: value })
-                //this.getShelterInfo()
+                this.getShelterInfo()
                 this.getVolunList()
             }
             else {
@@ -35,22 +33,21 @@ export default class agencyVolunList extends Component {
             console.log(error)
         }
     };
-
-  /*  
+   
     getShelterInfo(){
         var shelter_id = (jwt_decode(this.state.jwt)["shelter"]);
         axios('http://3.34.119.63/shelter/'+shelter_id+'/')
             .then((response)=>{
                 if(response.status==200){
                     this.setState({
-                        info_name: response.data.shelter_name,
-                        image:response.data.thumbnail,
+                        image: response.data.thumbnail,
+                        chat_url: response.data.chat_url
                     })
                 }
             })
             
     }
-*/
+
     getVolunList() {
         var config = {
             method: 'get',
@@ -74,7 +71,6 @@ export default class agencyVolunList extends Component {
         })
         .catch((error) => {
             console.log(this.state.jwt + '!!!!!!!error!!!!!!!')
-
             console.log(error)
         });
     }
@@ -86,8 +82,7 @@ export default class agencyVolunList extends Component {
         await AsyncStorage.clear();
         const value = await AsyncStorage.getItem('TOKEN');
         console.log(value);
-        this.props.navigation.navigate('Login');
-       
+        this.props.navigation.navigate('Login');       
     }
 
     getPermissionAsync = async () => {
@@ -153,7 +148,6 @@ export default class agencyVolunList extends Component {
                             {this._imageLoad()}
                         </View>
                         <View>
-                            <Text style={{ textAlign: 'center', fontSize: 16 }}>{this.state.info_name}</Text>
                             <TouchableOpacity
                                 title="Open URL with ReactNative.Linking"
                                 onPress={this._handleOpenWithLinking}
@@ -187,7 +181,8 @@ export default class agencyVolunList extends Component {
     }
 
     _handleOpenWithLinking = () => {
-        Linking.openURL('https://open.kakao.com/o/sPKotCrc');
+        //Linking.openURL('https://open.kakao.com/o/sPKotCrc');
+        Linking.openURL(this.state.chat_url);
     };
 
 }

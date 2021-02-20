@@ -81,7 +81,7 @@ export default class mainPage extends React.Component {
             info_location:'',
             info_animal:'',
             volunteerText:'',
-            tag_size: ''
+            tag_size: '',
         }
         this.t = setInterval(() => {
             this.setState({ count: this.state.count + 1 });
@@ -218,7 +218,8 @@ export default class mainPage extends React.Component {
                 if (response.status == 200) {
                     console.log("로그확인:");
                     console.log(response.data);
-                    this.setState({ posts: response.data })
+                    this.setState({ 
+                        posts: response.data })
                 }
             })
             .catch((error) => {
@@ -576,7 +577,7 @@ export default class mainPage extends React.Component {
                                 </TouchableOpacity>
                                 <CardItem>
                                     <Left>
-                                        <Thumbnail source={require('./assets/icon.png')} />
+                                        <Thumbnail source={{uri: 'https://mulgyeol-static-storage.s3.ap-northeast-2.amazonaws.com/' + item.shelter_thumbnail }} />
                                         <Body>
                                             <View flexDirection="row">
                                                 <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>

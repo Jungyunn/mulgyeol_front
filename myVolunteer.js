@@ -49,10 +49,9 @@ export default class myVolunteer extends Component {
         axios(config)
             .then((response) => {
                 if (response.status == 200) {
-                    console.log("로그확인:", this.state.jwt)
                     console.log(response.data);
-                    this.setState({ volunData: response.data })
-                    this.setState({ chatURL: response.data[0].shelter_chat})
+                    //this.setState({ volunData: response.data })
+                    //this.setState({ chatURL: response.data[0].shelter_chat_url})
                 }
                 else {
                     console.log("NOT 200");
@@ -60,7 +59,6 @@ export default class myVolunteer extends Component {
                 }
             })
             .catch((error) => {
-                console.log(this.state.jwt + '!!!!!!!error!!!!!!!')
                 console.log(error)
             });
     }
@@ -122,7 +120,7 @@ export default class myVolunteer extends Component {
                                             <TouchableOpacity
                                                 onPress={this._handleOpenWithLinking()}
                                                 style={styles.kakaoURL}>
-                                                <Text style={{ color: '#81BEF7', textDecorationLine: 'underline' }}> {item.shelter_chat}</Text>
+                                                <Text style={{ color: '#81BEF7', textDecorationLine: 'underline' }}> {item.shelter_chat_url}</Text>
                                             </TouchableOpacity>
                                         )}
 

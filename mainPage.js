@@ -365,7 +365,7 @@ export default class mainPage extends React.Component {
             name: 'photo.jpg'
         }
         
-        //formdata.append("image", { uri: this.state.image, name: 'space.jpg', type: 'image/jpg' })
+        formdata.append("image", photo)
         formdata.append("information",this.state.volunteerText)
         formdata.append("tags", taglabel)
 
@@ -615,8 +615,17 @@ export default class mainPage extends React.Component {
                                             </View>
                                         )}
                                     </View>
-                                    <View style={{ flexDirection: 'row'}}>
+                                    <View style={{ flexDirection: 'row', marginTop: 5}}>
                                         {item.tags.slice(4, 8).map((tags) =>
+                                            <View style={styles.tag_shape}>
+                                                <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
+                                                    {tags["text"]}
+                                                </Text>
+                                            </View>
+                                        )}
+                                    </View>
+                                    <View style={{ flexDirection: 'row', marginTop: 5}}>
+                                        {item.tags.slice(8, 12).map((tags) =>
                                             <View style={styles.tag_shape}>
                                                 <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
                                                     {tags["text"]}

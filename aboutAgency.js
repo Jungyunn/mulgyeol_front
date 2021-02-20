@@ -388,7 +388,7 @@ export default class aboutAgency extends Component {
                     <KeyboardAvoidingScrollView stickyFooter={this._renderButton2('시설 소개 하기',
                         () => {
                             this.setState({ visibleModal: null });
-                            alert(this.state.image)
+                            //alert(this.state.image)
                             this._shelterForm();
                         })}>
                         <View style={styles.fab2}>

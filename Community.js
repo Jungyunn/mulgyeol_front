@@ -30,7 +30,6 @@ export default class Community extends Component {
             commuText: null,
             jwt: null,
             showBongBtn: false, //메인페이지에서 봉 플로팅 버튼 (보호소에게만 보여야 함)
-            showAppyBtn: false, //메인페이지에서 봉사신청 버튼 (로그인하고, 봉사자 에게만 보여야 함)
 
             shelterNum: '',
             commuData: [],
@@ -103,7 +102,6 @@ export default class Community extends Component {
                     console.log("getCommunity 로그확인:", this.state.jwt);
                     //console.log(response.data);
                     this.setState({ commuData: response.data })
-
                     this._userRole();
                 }
                 else {
@@ -139,14 +137,14 @@ export default class Community extends Component {
     }
 
     _userRole = () => {
-        var decoded = (jwt_decode(this.state.jwt)["user_role"]);
-        console.log(decoded)
-        if (decoded == "2") {
-            this.setState({ showBongBtn: true, showAppyBtn: false })
-            console.log("herererererere" + decoded)
+        var decoded_role = (jwt_decode(this.state.jwt)["user_role"]);
+        var decoded_id = (jwt_decode(this.state.jwt)["shelter"]);
+    
+        if (decoded_role == "2" && (this.state.shelterNum == decoded_id )) {
+            this.setState({ showBongBtn: true})
         }
-        else if (decoded == "1") { //봉사자면 보이지 않게
-            this.setState({ showBongBtn: false, showAppyBtn: true })
+        else if ( decoded_role == "1" || this.state.shelterNum != decoded_id) { //봉사자면 보이지 않게
+            this.setState({ showBongBtn: false})
         }
     }
 
@@ -239,11 +237,38 @@ export default class Community extends Component {
             }
 
         }).catch((e) => {
-            alert(e + "  ㅅㅂ")
+            alert(e)
             console.log(e);
         })
       
-        }
+    }
+
+    delete_commuPost(){
+        let url ='http://3.34.119.63/community/';
+
+        fetch(url, {
+            method: 'delete',
+            headers: {
+                'accept': 'application/json',
+                'Authorization': `jwt ${this.state.jwt}`
+            },
+            body: formdata,
+
+        }).then((response) => {
+            if (response.status == 200) {
+                alert(response.status)
+                alert(response.data.message)
+               
+            }
+            else  {
+                //alert(response.data.message)
+                alert(response.status + "^^")
+            }
+
+        }).catch((e) => {
+            console.log(e);
+        })
+    }
 
     render() {
         return (

@@ -18,6 +18,7 @@ import SyncStorage from 'sync-storage';
 import { ThemeColors } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 
 export default class Community extends Component {
@@ -30,7 +31,7 @@ export default class Community extends Component {
             commuText: null,
             jwt: null,
             showBongBtn: false, //메인페이지에서 봉 플로팅 버튼 (보호소에게만 보여야 함)
-
+            thumbnail:null,
             shelterNum: '',
             commuData: [],
         };
@@ -69,7 +70,8 @@ export default class Community extends Component {
         try {
             const value = await AsyncStorage.getItem('TOKEN');
             const shelterID = SyncStorage.get('SHELTERID');
-            this.setState({ shelterNum: shelterID });
+            const thumbnail = SyncStorage.get('THUMBNAIL');
+            this.setState({ shelterNum: shelterID, thumbnail:thumbnail });
 
             if (value != null) {
                 // We have data!!
@@ -87,6 +89,7 @@ export default class Community extends Component {
         }
     };
 
+ 
     getCommunity() { //AsyncStorate.getItem('Token') 으로 하면 엉망임. async await을 해야 제대로 들어감
         var config = {
             method: 'get',
@@ -282,7 +285,7 @@ export default class Community extends Component {
                         <Card style={styles.cardStyle}>
                             <CardItem>
                                 <Left>
-                                    <Thumbnail source={require('./assets/icon.png')} />
+                                    <Thumbnail source={{uri:'https://mulgyeol-static-storage.s3.ap-northeast-2.amazonaws.com/' + this.state.thumbnail}} />
                                     <Body>
                                         <View flexDirection="row">
                                             <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
@@ -299,7 +302,7 @@ export default class Community extends Component {
                             <CardItem cardBody>
                                 <Image
                                     source={{ uri: item.image }}
-                                    style={{ height: 200, width: null, flex: 1 }}
+                                    style={{ height:screenHeight/2.5, width: null, flex: 1 }}
                                 />
                             </CardItem>
                             <CardItem>

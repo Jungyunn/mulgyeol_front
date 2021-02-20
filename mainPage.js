@@ -557,6 +557,7 @@ export default class mainPage extends React.Component {
                                 <TouchableOpacity onPress={() => {
                                     this.setState({shelterId:item.shelter})
                                     SyncStorage.set('SHELTERID', item.shelter);
+                                    SyncStorage.set('THUMBNAIL', item.shelter_thumbnail );
                                     this.props.navigation.navigate('aboutAgency')
                                 }}>
 

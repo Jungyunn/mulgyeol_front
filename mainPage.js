@@ -57,7 +57,8 @@ const gyeong_gu = ["수원시", "성남시", "고양시", "용인시", "부천�
 
 const gyeongnam_gu = ["창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군",
     "창녕군", "고성군", "남해군", "하동군", "산청군", "함양군", "거창군", "합천군"]
-var taglabel="";
+
+    var taglabel="";
 
 
 export default class mainPage extends React.Component {
@@ -331,6 +332,7 @@ export default class mainPage extends React.Component {
         for(var i =0 ; i<this.tag1.itemsSelected.length ; i++){
             taglabel+=this.tag1.itemsSelected[i]["label"]+", "
         }
+        
 
         if(this.tag1.itemsSelected.length!=1){
             if(this.tag1.itemsSelected[0]["id"] == 1 && this.tag1.itemsSelected[1]["id"] == 2 ||
@@ -359,7 +361,6 @@ export default class mainPage extends React.Component {
     post_volunteer() {
         let url = "http://3.34.119.63/volunteer/";
         const fileURL = this.state.image
-
         let formdata = new FormData();
         var photo = {
             uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
@@ -389,11 +390,10 @@ export default class mainPage extends React.Component {
                 alert(response.data.message)
                 alert(response.status)
             }
-
         }).catch((e) => {
             console.log(e);
         })
-        
+        taglabel=''
    /*
         const fileURL = this.state.image
         let url = "http://3.34.119.63/volunteer/";

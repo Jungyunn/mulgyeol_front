@@ -16,6 +16,7 @@ export default class agencyVolunList extends Component {
         this.state = {
             image: null,
             chat_url: '',
+            name:'',
         }
     }
     _retrieveData = async () => {
@@ -41,7 +42,8 @@ export default class agencyVolunList extends Component {
                 if(response.status==200){
                     this.setState({
                         image: response.data.thumbnail,
-                        chat_url: response.data.chat_url
+                        chat_url: response.data.chat_url,
+                        name:response.data.shelter_name
                     })
                 }
             })
@@ -147,7 +149,9 @@ export default class agencyVolunList extends Component {
                         <View style={{ paddingBottom: 10 }}>
                             {this._imageLoad()}
                         </View>
+                       
                         <View>
+                            <Text style={{textAlign:"center", fontSize:20, fontWeight:'400'}}>{this.state.name}</Text>
                             <TouchableOpacity
                                 title="Open URL with ReactNative.Linking"
                                 onPress={this._handleOpenWithLinking}

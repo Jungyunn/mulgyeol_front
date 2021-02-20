@@ -590,7 +590,7 @@ export default class mainPage extends React.Component {
                                                     </TouchableOpacity>) : null}
 
                                             </View>
-                                                <Text>{item.tags[0]["text"].slice(1,)}</Text>
+                                            <Text>{item.tags[0]["text"].slice(1,)}</Text>
 
                                         </Body>
                                     </Left>

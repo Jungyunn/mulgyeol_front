@@ -204,41 +204,46 @@ export default class Community extends Component {
         }
     }
 
-    post_community(){
-        let url = "http://3.34.119.63/community/";
+    post_community() {
+        let url ='http://3.34.119.63/community/';
         const fileURL = this.state.image
 
         let formdata = new FormData();
-        var photo = {
-            uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
-            type: 'image/jpg',
-            name: 'photo.jpg'
-        }
+         var photo = {
+             uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
+             type: 'image/jpg',
+             name: 'photo.jpg'
+         }
         
-        //formdata.append("image", photo)
+        formdata.append("image", photo)
         formdata.append("content", this.state.commuText)
-        
+
         fetch(url, {
             method: 'post',
             headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                'accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
                 'Authorization': `jwt ${this.state.jwt}`
             },
             body: formdata,
+
         }).then((response) => {
             if (response.status == 200) {
                 alert(response.status)
-            
+                alert(response.data.message)
+               
             }
-            else {
-               alert(response.status)
+            else  {
+                //alert(response.data.message)
+                alert(response.status + "^^")
             }
 
         }).catch((e) => {
+            alert(e + "  ㅅㅂ")
             console.log(e);
         })
-    }
+      
+        }
 
     render() {
         return (
@@ -282,7 +287,7 @@ export default class Community extends Component {
                 />
 
                 <Modal isVisible={this.state.visibleModal === 1}>
-                    <KeyboardAvoidingScrollView stickyFooter={this._renderButton2('새로운 소식 알리기', () => {this.setState({ visibleModal: null }, this.post_community())})}>
+                    <KeyboardAvoidingScrollView stickyFooter={this._renderButton2('새로운 소식 알리기', () => {this.setState({ visibleModal: null }), this.post_community()})}>
                         <View style={styles.fab2}>
                             {this._renderButton3('X', () => this.setState({ visibleModal: null, }))}
                         </View>

@@ -34,6 +34,7 @@ export default class Community extends Component {
             thumbnail:null,
             shelterNum: '',
             commuData: [],
+            postId: '',
         };
     }
 
@@ -102,7 +103,7 @@ export default class Community extends Component {
         axios(config)
             .then((response) => {
                 if (response.status == 200) {
-                    console.log("getCommunity 로그확인:", this.state.jwt);
+                    //console.log("getCommunity 로그확인:", this.state.jwt);
                     //console.log(response.data);
                     this.setState({ commuData: response.data })
                     this._userRole();
@@ -119,6 +120,8 @@ export default class Community extends Component {
                 console.log(error)
             });
     }
+
+
     _watchCommunity() { //로그인 없이도 글을 볼 수 있게 함
         axios(`http://3.34.119.63/community/?shelter=${this.state.shelterNum}`)
             .then((response) => {
@@ -230,55 +233,51 @@ export default class Community extends Component {
 
         }).then((response) => {
             if (response.status == 200) {
-                alert(response.status)
                 alert(response.data.message)
                
             }
             else  {
                 //alert(response.data.message)
-                alert(response.status + "^^")
+                //alert(response.status + "^^")
+                console.log(response.status)
             }
 
         }).catch((e) => {
-            alert(e)
+            //alert(e)
             console.log(e);
         })
       
     }
 
+    
     delete_commuPost(){
-        let url ='http://3.34.119.63/community/';
-
-        fetch(url, {
+        var config = {
             method: 'delete',
+            url: `http://3.34.119.63/community/?id=${this.state.postId}/`,
             headers: {
-                'accept': 'application/json',
+                'Content-type': 'application/json',
                 'Authorization': `jwt ${this.state.jwt}`
-            },
-            body: formdata,
-
-        }).then((response) => {
-            if (response.status == 200) {
-                alert(response.status)
-                alert(response.data.message)
-               
             }
-            else  {
-                //alert(response.data.message)
-                alert(response.status + "^^")
-            }
+        };
 
-        }).catch((e) => {
-            console.log(e);
-        })
+        axios(config)
+            .then((response) => {
+                console.log(response.data.message)
+            })
+            //.then(response=> console.log(response.data))
+
+            .catch((error) => {
+                console.log(error)
+            });
+
     }
+    
 
     render() {
         return (
             <View style={styles.backScreen}>
 
                 <FlatList
-                    style={{ paddingTop: 30 }}
                     keyExtractor={item => item.id}
                     data={this.state.commuData}
                     renderItem={({ item }) => (
@@ -289,7 +288,12 @@ export default class Community extends Component {
                                     <Body>
                                         <View flexDirection="row">
                                             <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
-                                            <TouchableOpacity style={{ position: "absolute", right: 0 }}>
+                                            <TouchableOpacity style={{ position: "absolute", right: 0 }} 
+                                            onPress={() => {
+                                                            this.setState({postId: item.id});
+                                                            alert(this.state.postId);
+                                                            this.delete_commuPost()
+                                                            }}>
                                                 <Text style={{ color: "#5f5f5f", fontSize: 16 }}>삭제</Text>
                                             </TouchableOpacity>
                                         </View>

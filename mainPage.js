@@ -58,8 +58,10 @@ const gyeong_gu = ["수원시", "성남시", "고양시", "용인시", "부천�
 const gyeongnam_gu = ["창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군",
     "창녕군", "고성군", "남해군", "하동군", "산청군", "함양군", "거창군", "합천군"]
 
-    var taglabel="";
-
+var taglabel='';
+var get_tags=[];
+var comp_tags;
+//var comp_image, comp_info, comp_tags="";
 
 export default class mainPage extends React.Component {
 
@@ -81,8 +83,10 @@ export default class mainPage extends React.Component {
             info_name:'',
             info_location:'',
             info_animal:'',
-            volunteerText:'',
+            volunteerText:null,
             tag_size: '',
+            comp_info:null,
+            comp_image:null,
         }
         this.t = setInterval(() => {
             this.setState({ count: this.state.count + 1 });
@@ -237,7 +241,7 @@ export default class mainPage extends React.Component {
     getVolunPostId(){
         var config = {
             method: 'get',
-            url: 'http://3.34.119.63/volunteer/69/',
+            url: 'http://3.34.119.63/volunteer/102/',
             headers: {
                 'Authorization': `jwt ${this.state.jwt}`
             }
@@ -246,23 +250,40 @@ export default class mainPage extends React.Component {
         axios(config)
             .then((response) => {
                 if (response.status == 200) {
-                    console.log(200)
-                    console.log(response.data)
+                    console.log(200);
+                    console.log(response.data);
                     this.setState({
-                        image: response.data.image,
-                        volunteerText: response.data.information
+                        comp_image: response.data.image,
+                        comp_info: response.data.information,
+                        image:response.data.image,
+                        volunteerText:response.data.information,
                     })
+              
+                    // for(var i=0; i<response.data.tags.length;i++){
+                    //     get_tags[i]=response.data.tags[i]["text"];
+                    //     comp_tags+=response.data.tags[i]["text"]+", ";
+                    // }
+                    //comp_image=response.data.image;
+                    //comp_info=response.data.info;
                 }
                 else {
                     console.log(response.statusText);
-
+                
                 }
+                //alert(response.data.information);
+      
             })
 
             .catch((error) => {
+                this.setState({
+                    comp_image: response.data.image,
+                    comp_info: response.data.information,
+                })
                 console.log(error.response)
             });
     }
+
+
 
 
     getPermissionAsync = async () => {
@@ -354,7 +375,7 @@ export default class mainPage extends React.Component {
     }
 
     CheckTag = () => {
-        
+        taglabel='';
         if(this.tag1.itemsSelected.length == 0){
             alert("'모집상태'를 선택해야합니다.");
             return 0;
@@ -374,19 +395,126 @@ export default class mainPage extends React.Component {
             }
             else {
                 this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
-                this.post_volunteer();
+                //comp_tag로 수정해야함
+                if(this.state.comp_info==null){
+                    this.post_volunteer();
+                }
+                else{
+                    this.patch_volunteer();
+                }
             }
         }else{
             if( this.tag1.itemsSelected[0]['id'] == 1 || this.tag1.itemsSelected[0]['id'] == 2){
                 this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
-                this.post_volunteer();
                 
+                if(this.state.comp_info==null){
+                    this.post_volunteer();
+                }
+                else{
+                    this.patch_volunteer();
+                }
             }
             else{
                 alert("'모집상태'를 선택해야합니다.");
             }
         }
+      
     };
+
+    // patch_volunteer(){
+
+    //     const fileURL = this.state.image
+
+    //     var formdata = new FormData();
+    //     var photo = {
+    //         uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
+    //         type: 'image/jpg',
+    //         name: 'photo.jpg'
+    //     }
+
+    //     if(this.state.image !== this.state.comp_image){
+    //         formdata.append("image",photo)
+    //     }
+    //     if(this.state.volunteerText !== this.state.comp_info){
+    //         formdata.append("information", this.state.volunteerText)
+    //     }
+    //     // if(taglabel != comp_tags){
+    //     //     formdata.append("tags", taglabel)
+    //     // }
+    //     //alert(JSON.stringify(formdata));
+    //     formdata.append("tags",taglabel);
+
+    //     var config = {
+    //         method: 'patch',
+    //         url: `http://3.34.119.63/volunteer/69/`,
+    //         headers: {
+    //             Accept: "application/json",
+    //             'Content-Type': 'multipart/form-data',
+    //             'Authorization': `jwt ${this.state.jwt}`
+    //         },
+    //         data: formdata
+    //     };
+    //     axios(config)
+    //         .then((response) => {
+    //             if (response.status == 200) {
+    //               alert(response.status);
+    //             }
+    //             else {
+    //                 alert(response.status);
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             alert(error);
+    //             console.log("shelterForm error:" + error)
+    //         });
+    //         taglabel=''
+    // }
+
+    patch_volunteer() {
+        const fileURL = this.state.image;
+
+        var formData = new FormData();
+        var photo = {
+            uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
+            type: 'image/jpg',
+            name: 'photo.jpg'
+        }
+
+        if (this.state.volunteerText !== this.state.comp_info) {
+            formData.append('information', this.state.volunteerText);
+        }
+        if (this.state.image !== this.state.comp_image) {
+            formData.append('image', photo);
+        }
+        
+        //formData.append('tags', "#모집중, ");
+
+        var config = {
+            method: 'patch',
+            url: `http://3.34.119.63/volunteer/102/`,
+            headers: {
+                Accept: "application/json",
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `jwt ${this.state.jwt}`
+            },
+            data: formData
+        };
+        axios(config)
+            .then((response) => {
+                if (response.status == 200) {
+                  alert(response.status)
+                }
+                else {
+                    alert(response.status)
+                }
+            })
+            .catch((error) => {
+                alert("tq"+error);
+                console.log("shelterForm error:" + error)
+            });
+         
+
+    }
 
     post_volunteer() {
         let url = "http://3.34.119.63/volunteer/";
@@ -400,7 +528,8 @@ export default class mainPage extends React.Component {
         
         formdata.append("image", photo)
         formdata.append("information",this.state.volunteerText)
-        formdata.append("tags", taglabel)
+    
+        formdata.append("tags", taglabel);
 
         fetch(url, {
             method: 'post',
@@ -412,9 +541,10 @@ export default class mainPage extends React.Component {
             body: formdata,
         }).then((response) => {
             if (response.status == 201) {
+                
                 alert(response.status)
                 alert(response.data.message)
-               
+   
             }
             else if (response.status == 400) {
                 alert(response.data.message)
@@ -422,12 +552,12 @@ export default class mainPage extends React.Component {
             }
         }).catch((e) => {
             console.log(e);
-        })
-        taglabel=''
+        });
+        alert(taglabel);
+       
    /*
         const fileURL = this.state.image
         let url = "http://3.34.119.63/volunteer/";
-
         var formData = new FormData();
         var photo = {
             uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
@@ -437,7 +567,6 @@ export default class mainPage extends React.Component {
         //formData.append('image', photo);
         formData.append("information",this.state.volunteerText)
         formData.append("tags", taglabel)
-
         var config = {
             method: 'POST',
             url: url,
@@ -590,6 +719,7 @@ export default class mainPage extends React.Component {
                                     SyncStorage.set('SHELTERID', item.shelter);
                                     SyncStorage.set('THUMBNAIL', item.shelter_thumbnail );
                                     this.props.navigation.navigate('aboutAgency')
+                                    alert(item.id)
                                 }}>
 
                                     <CardItem cardBody>
@@ -622,8 +752,7 @@ export default class mainPage extends React.Component {
                                                     </TouchableOpacity>) : null}
 
                                             </View>
-                                            <Text>{item.tags[0]["text"].slice(1,)}</Text>
-
+                                            
                                         </Body>
                                     </Left>
                                 </CardItem>
@@ -732,8 +861,8 @@ export default class mainPage extends React.Component {
                 {this.state.showBongBtn ? (
                     <View style={styles.fab}>
                         {this._renderButton1('봉', () =>{
-                            this.setState({ visibleModal: 1 }),
-                            this.getVolunPostId()
+                            this.setState({ visibleModal: 1 });
+                           this.getVolunPostId();
                         })}
                     </View>
                 ) : null}

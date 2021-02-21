@@ -72,7 +72,7 @@ export default class aboutAgency extends Component {
             uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
             type: 'image/jpg',
             name: 'photo.jpg'
-        }
+        };
 
         if (this.state.image !== this.state.sheldata.thumbnail) {
             formData.append('thumbnail', photo);

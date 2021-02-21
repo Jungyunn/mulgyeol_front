@@ -170,7 +170,7 @@ export default class mainPage extends React.Component {
         axios(config)
             .then((response) => {
                 if (response.status == 200) {
-                    console.log("로그확인:", this.state.jwt);
+                    //console.log("로그확인:", this.state.jwt);
                     //console.log("물결말고shelter번호:" , response.data[0].shelter_location);
                     //console.log(response.data);
                     this.setState({ posts: response.data })
@@ -217,8 +217,8 @@ export default class mainPage extends React.Component {
         axios('http://3.34.119.63/volunteer')
             .then((response) => {
                 if (response.status == 200) {
-                    console.log("로그확인:");
-                    console.log(response.data);
+                    //console.log("로그확인:");
+                    //console.log(response.data);
                     this.setState({ 
                         posts: response.data })
                 }
@@ -231,6 +231,36 @@ export default class mainPage extends React.Component {
 
                 });
                 console.log(error)
+            });
+    }
+
+    getVolunPostId(){
+        var config = {
+            method: 'get',
+            url: 'http://3.34.119.63/volunteer/69/',
+            headers: {
+                'Authorization': `jwt ${this.state.jwt}`
+            }
+        };
+
+        axios(config)
+            .then((response) => {
+                if (response.status == 200) {
+                    console.log(200)
+                    console.log(response.data)
+                    this.setState({
+                        image: response.data.image,
+                        volunteerText: response.data.information
+                    })
+                }
+                else {
+                    console.log(response.statusText);
+
+                }
+            })
+
+            .catch((error) => {
+                console.log(error.response)
             });
     }
 
@@ -431,9 +461,10 @@ export default class mainPage extends React.Component {
                 console.log("shelterForm error:" + error)
                 alert(error)
             });
-*/
-        
+*/        
     }
+
+    
 
   
     _userRole = () => {
@@ -700,10 +731,10 @@ export default class mainPage extends React.Component {
 
                 {this.state.showBongBtn ? (
                     <View style={styles.fab}>
-                        {this._renderButton1('봉', () =>
+                        {this._renderButton1('봉', () =>{
                             this.setState({ visibleModal: 1 }),
-                           
-                            )}
+                            this.getVolunPostId()
+                        })}
                     </View>
                 ) : null}
 

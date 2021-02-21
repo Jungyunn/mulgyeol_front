@@ -126,8 +126,7 @@ export default class Community extends Component {
         axios(`http://3.34.119.63/community/?shelter=${this.state.shelterNum}`)
             .then((response) => {
                 if (response.status == 200) {
-                    console.log("로그확인:");
-                    console.log(response.data);
+                    //console.log(response.data);
                     this.setState({ commuData: response.data })
                 }
             })
@@ -252,22 +251,21 @@ export default class Community extends Component {
     
     delete_commuPost(){
         var config = {
-            method: 'delete',
-            url: `http://3.34.119.63/community/?id=${this.state.postId}/`,
+            method: 'DELETE',
+            url: `http://3.34.119.63/community/${this.state.postId}/`,
             headers: {
-                'Content-type': 'application/json',
                 'Authorization': `jwt ${this.state.jwt}`
             }
         };
 
         axios(config)
             .then((response) => {
-                console.log(response.data.message)
+                console.log(response)
             })
             //.then(response=> console.log(response.data))
 
             .catch((error) => {
-                console.log(error)
+                console.log(error.response)
             });
 
     }
@@ -289,10 +287,9 @@ export default class Community extends Component {
                                         <View flexDirection="row">
                                             <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
                                             <TouchableOpacity style={{ position: "absolute", right: 0 }} 
-                                            onPress={() => {
-                                                            this.setState({postId: item.id});
-                                                            alert(this.state.postId);
-                                                            this.delete_commuPost()
+                                            onPress={() => {this.setState({postId: item.id});     
+                                                            Alert.alert('삭제', '삭제하시겠습니까?', [
+                                                                {text:"OK", onPress:()=>{this.delete_commuPost(), console.log(this.state.postId)}}])                                            
                                                             }}>
                                                 <Text style={{ color: "#5f5f5f", fontSize: 16 }}>삭제</Text>
                                             </TouchableOpacity>

@@ -31,6 +31,7 @@ export default class Community extends Component {
             commuText: null,
             jwt: null,
             showBongBtn: false, //메인페이지에서 봉 플로팅 버튼 (보호소에게만 보여야 함)
+            showDeleteText: false,
             thumbnail:null,
             shelterNum: '',
             commuData: [],
@@ -146,10 +147,10 @@ export default class Community extends Component {
         var decoded_id = (jwt_decode(this.state.jwt)["shelter"]);
     
         if (decoded_role == "2" && (this.state.shelterNum == decoded_id )) {
-            this.setState({ showBongBtn: true})
+            this.setState({ showBongBtn: true, showDeleteText: true})
         }
         else if ( decoded_role == "1" || this.state.shelterNum != decoded_id) { //봉사자면 보이지 않게
-            this.setState({ showBongBtn: false})
+            this.setState({ showBongBtn: false, showDeleteText: false})
         }
     }
 
@@ -288,10 +289,20 @@ export default class Community extends Component {
                                             <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
                                             <TouchableOpacity style={{ position: "absolute", right: 0 }} 
                                             onPress={() => {this.setState({postId: item.id});     
-                                                            Alert.alert('삭제', '삭제하시겠습니까?', [
-                                                                {text:"OK", onPress:()=>{this.delete_commuPost(), console.log(this.state.postId)}}])                                            
+                                                            Alert.alert('삭제', '삭제하시겠습니까?', 
+                                                            [
+                                                                {text:"OK", onPress:()=>{this.delete_commuPost(), console.log(this.state.postId)}},
+                                                                {text:"NO", style:'cancel'}
+                                                            ],
+                                                            {cancelable: true}
+                                                            )                                            
                                                             }}>
-                                                <Text style={{ color: "#5f5f5f", fontSize: 16 }}>삭제</Text>
+
+                                                {this.state.showDeleteText ? (
+                                                    <Text style={{ color: "#5f5f5f", fontSize: 16 }}>삭제</Text>
+
+                                                ) : null }                
+                                                
                                             </TouchableOpacity>
                                         </View>
 

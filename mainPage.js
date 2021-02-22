@@ -144,6 +144,7 @@ export default class mainPage extends React.Component {
 
     componentDidMount() {
         this.getPermissionAsync();
+        this._retrieveData();
         this.getVolunPost();
         //Here is the Trick
         const { navigation } = this.props;
@@ -175,23 +176,35 @@ export default class mainPage extends React.Component {
         axios(config)
             .then((response) => {
                 if (response.status == 200) {
-                    //console.log("로그확인:", this.state.jwt);
                     //console.log("물결말고shelter번호:" , response.data[0].shelter_location);
                     //console.log(response.data);
                
                     this._userRole();
-                   
+                    //alert(response.data[2].shelter_name)
                     this.setState({ 
                         posts: response.data,
-                        post_id:response.data[this.state.shelterIdnum].id
                      })
+                     var cnt=1;
+                     for(var i = 0; i<response.data.length;i++){
+                         if(response.data[i].shelter==this.state.shelterIdnum){
+                             this.setState({
+                                 post_id:response.data[i].id,
+                             })
+                             cnt++;
+                         }else if(cnt==1){
+                             this.setState({
+                                 post_id:null,
+                             })
+                         }
+                     }
 
-                    //console.log("shelter번호:", response.data[0].shelter);
-
-                    //console.log("here"+this.state.feeds)
-                 
-                  
-                    //loading:true
+                    //  if(response.data[this.state.shelterIdnum]==null){
+                    //      this.setState({post_id:null})
+                         
+                    //  }else{
+                    //      this.setState({post_id:response.data[this.state.shelterIdnum].id});
+                    //      alert(response.data[this.state.shelterIdnum].shelter_name);
+                    //  }
                 }
                 else {
                     console.log("로그인되지 않음");
@@ -263,8 +276,7 @@ export default class mainPage extends React.Component {
                     this.setState({
                         comp_image: response.data.image,
                         comp_info: response.data.information,
-                        image:response.data.image,
-                        volunteerText:response.data.information,
+                      
                         
                     })
               
@@ -405,7 +417,7 @@ export default class mainPage extends React.Component {
             else {
                 this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
                 //comp_tag로 수정해야함
-                if(this.state.comp_info==null){
+                if(this.state.post_id==null){
                     this.post_volunteer();
                 }
                 else{
@@ -416,7 +428,7 @@ export default class mainPage extends React.Component {
             if( this.tag1.itemsSelected[0]['id'] == 1 || this.tag1.itemsSelected[0]['id'] == 2){
                 this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
                 
-                if(this.state.comp_info==null){
+                if(this.state.post_id==null){
                     this.post_volunteer();
                 }
                 else{
@@ -537,7 +549,6 @@ export default class mainPage extends React.Component {
         
         formdata.append("image", photo)
         formdata.append("information",this.state.volunteerText)
-    
         formdata.append("tags", taglabel);
 
         fetch(url, {
@@ -562,7 +573,7 @@ export default class mainPage extends React.Component {
         }).catch((e) => {
             console.log(e);
         });
-        alert(taglabel);
+        taglabel='';
        
    /*
         const fileURL = this.state.image
@@ -833,7 +844,7 @@ export default class mainPage extends React.Component {
 
                             <Text style={{ fontSize: 15, fontWeight: 'bold', paddingLeft: 10 }}> {this.state.info_name} </Text>
                             <View style={{ flexDirection: "row", paddingBottom: 10, paddingLeft: 10 }}>
-                                <Text style={{ fontSize: 15 }}> {this.state.info_location} </Text>
+                                <Text style={{ fontSize: 15 }}> {this.state.info_location} + {this.state.post_id}</Text>
                                 <Text style={{ fontSize: 15 }}> {this.state.info_animal}</Text>
                             </View>
 

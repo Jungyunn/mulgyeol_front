@@ -198,6 +198,13 @@ export default class mainPage extends React.Component {
                          }
                      }
 
+                    //  if(response.data[this.state.shelterIdnum]==null){
+                    //      this.setState({post_id:null})
+                         
+                    //  }else{
+                    //      this.setState({post_id:response.data[this.state.shelterIdnum].id});
+                    //      alert(response.data[this.state.shelterIdnum].shelter_name);
+                    //  }
                 }
                 else {
                     console.log("로그인되지 않음");
@@ -389,15 +396,15 @@ export default class mainPage extends React.Component {
     }
 
     CheckTag = () => {
-        taglabel='';
+
         if(this.tag1.itemsSelected.length == 0){
             alert("'모집상태'를 선택해야합니다.");
             return 0;
         }
+
         for(var i =0 ; i<this.tag1.itemsSelected.length ; i++){
             taglabel+=this.tag1.itemsSelected[i]["label"]+", "
         }
-        
 
         if(this.tag1.itemsSelected.length!=1){
             if(this.tag1.itemsSelected[0]["id"] == 1 && this.tag1.itemsSelected[1]["id"] == 2 ||
@@ -435,54 +442,6 @@ export default class mainPage extends React.Component {
       
     };
 
-    // patch_volunteer(){
-
-    //     const fileURL = this.state.image
-
-    //     var formdata = new FormData();
-    //     var photo = {
-    //         uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
-    //         type: 'image/jpg',
-    //         name: 'photo.jpg'
-    //     }
-
-    //     if(this.state.image !== this.state.comp_image){
-    //         formdata.append("image",photo)
-    //     }
-    //     if(this.state.volunteerText !== this.state.comp_info){
-    //         formdata.append("information", this.state.volunteerText)
-    //     }
-    //     // if(taglabel != comp_tags){
-    //     //     formdata.append("tags", taglabel)
-    //     // }
-    //     //alert(JSON.stringify(formdata));
-    //     formdata.append("tags",taglabel);
-
-    //     var config = {
-    //         method: 'patch',
-    //         url: `http://3.34.119.63/volunteer/69/`,
-    //         headers: {
-    //             Accept: "application/json",
-    //             'Content-Type': 'multipart/form-data',
-    //             'Authorization': `jwt ${this.state.jwt}`
-    //         },
-    //         data: formdata
-    //     };
-    //     axios(config)
-    //         .then((response) => {
-    //             if (response.status == 200) {
-    //               alert(response.status);
-    //             }
-    //             else {
-    //                 alert(response.status);
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             alert(error);
-    //             console.log("shelterForm error:" + error)
-    //         });
-    //         taglabel=''
-    // }
 
     patch_volunteer() {
         const fileURL = this.state.image;
@@ -501,7 +460,7 @@ export default class mainPage extends React.Component {
             formData.append('image', photo);
         }
         
-        //formData.append('tags', "#모집중, ");
+        //formData.append('tags', '#모집중');
 
         var config = {
             method: 'patch',
@@ -554,8 +513,10 @@ export default class mainPage extends React.Component {
             body: formdata,
         }).then((response) => {
             if (response.status == 201) {
+                
                 alert(response.status)
                 alert(response.data.message)
+   
             }
             else if (response.status == 400) {
                 alert(response.data.message)
@@ -564,44 +525,8 @@ export default class mainPage extends React.Component {
         }).catch((e) => {
             console.log(e);
         });
-      
-       
-   /*
-        const fileURL = this.state.image
-        let url = "http://3.34.119.63/volunteer/";
-        var formData = new FormData();
-        var photo = {
-            uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
-            type: 'image/jpg',
-            name: 'photo.jpg'
-        }
-        //formData.append('image', photo);
-        formData.append("information",this.state.volunteerText)
-        formData.append("tags", taglabel)
-        var config = {
-            method: 'POST',
-            url: url,
-            headers: {
-                Accept: "application/json",
-                'Content-Type': 'multipart/form-data',
-                'Authorization': `jwt ${this.state.jwt}`
-            },
-            data: formData
-        };
-        axios(config)
-            .then((response) => {
-                if (response.status == 201) {
-                   alert(response.status)
-                }
-                else {
-                    alert(response.status)
-                }
-            })
-            .catch((error) => {
-                console.log("shelterForm error:" + error)
-                alert(error)
-            });
-*/        
+        taglabel='';
+  
     }
 
     
@@ -764,7 +689,7 @@ export default class mainPage extends React.Component {
                                                     </TouchableOpacity>) : null}
 
                                             </View>
-                                            
+                                            <Text>{item.tags[0]["text"].slice(1,)}</Text>
                                         </Body>
                                     </Left>
                                 </CardItem>
@@ -835,7 +760,7 @@ export default class mainPage extends React.Component {
 
                             <Text style={{ fontSize: 15, fontWeight: 'bold', paddingLeft: 10 }}> {this.state.info_name} </Text>
                             <View style={{ flexDirection: "row", paddingBottom: 10, paddingLeft: 10 }}>
-                                <Text style={{ fontSize: 15 }}> {this.state.info_location} + {this.state.post_id}</Text>
+                                <Text style={{ fontSize: 15 }}> {this.state.info_location}</Text>
                                 <Text style={{ fontSize: 15 }}> {this.state.info_animal}</Text>
                             </View>
 

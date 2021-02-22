@@ -87,6 +87,7 @@ export default class mainPage extends React.Component {
             tag_size: '',
             comp_info:null,
             comp_image:null,
+            post_id:null,
         }
         this.t = setInterval(() => {
             this.setState({ count: this.state.count + 1 });
@@ -177,11 +178,18 @@ export default class mainPage extends React.Component {
                     //console.log("로그확인:", this.state.jwt);
                     //console.log("물결말고shelter번호:" , response.data[0].shelter_location);
                     //console.log(response.data);
-                    this.setState({ posts: response.data })
+               
+                    this._userRole();
+                   
+                    this.setState({ 
+                        posts: response.data,
+                        post_id:response.data[this.state.shelterIdnum].id
+                     })
+
                     //console.log("shelter번호:", response.data[0].shelter);
 
                     //console.log("here"+this.state.feeds)
-                    this._userRole();
+                 
                   
                     //loading:true
                 }
@@ -241,7 +249,7 @@ export default class mainPage extends React.Component {
     getVolunPostId(){
         var config = {
             method: 'get',
-            url: 'http://3.34.119.63/volunteer/102/',
+            url: `http://3.34.119.63/volunteer/${this.state.post_id}/`,
             headers: {
                 'Authorization': `jwt ${this.state.jwt}`
             }
@@ -257,6 +265,7 @@ export default class mainPage extends React.Component {
                         comp_info: response.data.information,
                         image:response.data.image,
                         volunteerText:response.data.information,
+                        
                     })
               
                     // for(var i=0; i<response.data.tags.length;i++){
@@ -491,7 +500,7 @@ export default class mainPage extends React.Component {
 
         var config = {
             method: 'patch',
-            url: `http://3.34.119.63/volunteer/102/`,
+            url: `http://3.34.119.63/volunteer/${this.state.post_id}/`,
             headers: {
                 Accept: "application/json",
                 'Content-Type': 'multipart/form-data',
@@ -614,7 +623,6 @@ export default class mainPage extends React.Component {
     render() {
         //const { navigate } = this.props.navigation;
         return (
-
             <View style={styles.backScreen}>
                 <View style={{ paddingTop: 30, flex: 1 }}>
                     <View style={{ flexDirection: 'row', height: 40, marginLeft: 20, marginRight: 20, justifyContent: 'center', marginBottom: 10 }}>
@@ -711,15 +719,17 @@ export default class mainPage extends React.Component {
 
                     <FlatList
                         keyExtractor={item => item.id}
+                        
                         data={this.state.posts}
                         renderItem={({ item }) => (
+                            
                             <Card style={styles.cardStyle}>
                                 <TouchableOpacity onPress={() => {
                                     this.setState({shelterId:item.shelter})
                                     SyncStorage.set('SHELTERID', item.shelter);
                                     SyncStorage.set('THUMBNAIL', item.shelter_thumbnail );
                                     this.props.navigation.navigate('aboutAgency')
-                                    alert(item.id)
+                            
                                 }}>
 
                                     <CardItem cardBody>
@@ -743,7 +753,7 @@ export default class mainPage extends React.Component {
                                         <Body>
                                             <View flexDirection="row">
                                                 <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
-
+                                                
                                                 {this.state.showAppyBtn ?
                                                     (<TouchableOpacity
                                                         style={styles.regiBtn}

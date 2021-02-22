@@ -198,13 +198,6 @@ export default class mainPage extends React.Component {
                          }
                      }
 
-                    //  if(response.data[this.state.shelterIdnum]==null){
-                    //      this.setState({post_id:null})
-                         
-                    //  }else{
-                    //      this.setState({post_id:response.data[this.state.shelterIdnum].id});
-                    //      alert(response.data[this.state.shelterIdnum].shelter_name);
-                    //  }
                 }
                 else {
                     console.log("로그인되지 않음");
@@ -561,10 +554,8 @@ export default class mainPage extends React.Component {
             body: formdata,
         }).then((response) => {
             if (response.status == 201) {
-                
                 alert(response.status)
                 alert(response.data.message)
-   
             }
             else if (response.status == 400) {
                 alert(response.data.message)
@@ -573,7 +564,7 @@ export default class mainPage extends React.Component {
         }).catch((e) => {
             console.log(e);
         });
-        taglabel='';
+      
        
    /*
         const fileURL = this.state.image

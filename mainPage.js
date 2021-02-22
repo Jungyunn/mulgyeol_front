@@ -59,8 +59,7 @@ const gyeongnam_gu = ["창원시", "진주시", "통영시", "사천시", "김�
     "창녕군", "고성군", "남해군", "하동군", "산청군", "함양군", "거창군", "합천군"]
 
 var taglabel='';
-var get_tags=[];
-var comp_tags;
+var searchtaglabel='';
 //var comp_image, comp_info, comp_tags="";
 
 export default class mainPage extends React.Component {
@@ -95,7 +94,7 @@ export default class mainPage extends React.Component {
         clearInterval(this.t);
     }
 
-   
+    
 
     _retrieveData = async () => {
         try {
@@ -109,8 +108,6 @@ export default class mainPage extends React.Component {
             } else {
                 console.log("token이 없습니다!")
                 this.setState({ showAppyBtn: false, showBongBtn: false })
-
-
             }
         } catch (error) {
             console.log(error)
@@ -259,6 +256,21 @@ export default class mainPage extends React.Component {
             });
     }
 
+    getSearchPost(){
+        axios(`http://3.34.119.63/volunteer/?tags=${searchtaglabel}`)
+            .then((response) => {
+                if (response.status == 200) {
+                    this.setState({ 
+                        posts: response.data })
+                }
+                alert(JSON.stringify(response.data))
+            })
+            .catch((error) => {
+               alert(error);
+            });
+        searchtaglabel='';
+    }
+
     getVolunPostId(){
         var config = {
             method: 'get',
@@ -395,6 +407,14 @@ export default class mainPage extends React.Component {
         })
     }
 
+    SearchTag=()=>{
+        for(var i =0 ; i<this.tag.itemsSelected.length ; i++){
+            searchtaglabel+=this.tag.itemsSelected[i]["label"]+", "
+        }
+        alert(searchtaglabel)
+        this.getSearchPost();
+    }
+
     CheckTag = () => {
 
         if(this.tag1.itemsSelected.length == 0){
@@ -460,7 +480,7 @@ export default class mainPage extends React.Component {
             formData.append('image', photo);
         }
         
-        //formData.append('tags', '#모집중');
+        formData.append('tags', taglabel);
 
         var config = {
             method: 'patch',
@@ -485,7 +505,7 @@ export default class mainPage extends React.Component {
                 alert("tq"+error);
                 console.log("shelterForm error:" + error)
             });
-         
+         taglabel='';
 
     }
 
@@ -546,6 +566,9 @@ export default class mainPage extends React.Component {
             this.setState({ showBongBtn: false, showAppyBtn: true })
         }
     }
+
+
+    
 
     render() {
         //const { navigate } = this.props.navigation;
@@ -629,12 +652,14 @@ export default class mainPage extends React.Component {
                     </View>
                     <View>
                         <TouchableOpacity style={styles.searchBtn} onPress={() => {
-                            /*{this.tag.itemsSelected.map((item, i) => {
-                                    return <selectedArray label={item} key={`${i}+1`} value={i} />
-                            })}*/
+                             {this.tag.itemsSelected.map((item, i) => {
+                                     return <selectedArray label={item} key={`${i}+1`} value={i} />
+                             })}
+                            
                             //this.state.selectedArray = this.tag.itemsSelected[0]["label"]
                             //Alert.alert('Selected items:', JSON.stringify(this.state.selectedArray));
-                            alert(this.state.posts);
+                            
+                            this.SearchTag()
                         }}>
                             <Text style={styles.searchBtnText}>
                                 보호소 검색
@@ -646,7 +671,7 @@ export default class mainPage extends React.Component {
 
                     <FlatList
                         keyExtractor={item => item.id}
-                        
+                         
                         data={this.state.posts}
                         renderItem={({ item }) => (
                             
@@ -680,14 +705,12 @@ export default class mainPage extends React.Component {
                                         <Body>
                                             <View flexDirection="row">
                                                 <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
-                                                
                                                 {this.state.showAppyBtn ?
                                                     (<TouchableOpacity
                                                         style={styles.regiBtn}
                                                         onPress={() => this.props.navigation.navigate("volunteerDate")}>
                                                         <Text>봉사신청</Text>
                                                     </TouchableOpacity>) : null}
-
                                             </View>
                                             <Text>{item.tags[0]["text"].slice(1,)}</Text>
                                         </Body>
@@ -776,7 +799,7 @@ export default class mainPage extends React.Component {
                                     }}
                                 />
                             </View>
-
+                          
                             <TextInput
                                 multiline
                                 numberOfLines={3}

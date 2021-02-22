@@ -54,7 +54,8 @@
     "react-navigation-tabs": "^2.9.0",
     "save": "^2.4.0",
     "sync-storage": "^0.4.2",
-    "undefined": "react-native-community/picker"
+    "undefined": "react-native-community/picker",
+    "@react-native-community/datetimepicker": "2.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",

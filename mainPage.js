@@ -16,7 +16,7 @@ import { Card, CardItem, Thumbnail, Body, Left, Right, Button } from 'native-bas
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TagSelect } from 'react-native-tag-select';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import { round, onChange } from 'react-native-reanimated';
+import { round, onChange, set } from 'react-native-reanimated';
 import Modal from 'react-native-modal';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -716,14 +716,16 @@ export default class mainPage extends React.Component {
                                         <Body>
                                             <View flexDirection="row">
                                                 <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
-                                                {this.state.showAppyBtn ?
-                                                    (<TouchableOpacity
-                                                        style={styles.regiBtn}
-                                                        onPress={() => this.props.navigation.navigate("volunteerDate")}>
-                                                        <Text>봉사신청</Text>
-                                                    </TouchableOpacity>) : null}
+                                                   
+                                                    {this.state.showAppyBtn && item.tags[0]["text"]==="#모집중" ?
+                                                        (<TouchableOpacity
+                                                            style={styles.regiBtn}
+                                                            onPress={() => this.props.navigation.navigate("volunteerDate")}>
+                                                            <Text>봉사신청</Text>
+                                                        </TouchableOpacity>) : null}
+                                                
                                             </View>
-                                            <Text>{item.tags[0]["text"].slice(1,)}</Text>
+                                            <Text>{item.tags[0]["text"].slice(1,)} </Text>
                                         </Body>
                                     </Left>
                                 </CardItem>

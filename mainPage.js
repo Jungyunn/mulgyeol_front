@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     StyleSheet,
@@ -10,8 +10,8 @@ import {
     Image,
     Dimensions,
     AsyncStorage,
-} 
-from 'react-native';
+}
+    from 'react-native';
 import { Card, CardItem, Thumbnail, Body, Left, Right, Button } from 'native-base';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TagSelect } from 'react-native-tag-select';
@@ -25,6 +25,7 @@ import axios from 'axios'
 import jwt_decode from 'jwt-decode';
 import SyncStorage from 'sync-storage';
 import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scroll-view';
+import DatePicker from 'react-native-datepicker'
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -58,8 +59,9 @@ const gyeong_gu = ["수원시", "성남시", "고양시", "용인시", "부천�
 const gyeongnam_gu = ["창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군",
     "창녕군", "고성군", "남해군", "하동군", "산청군", "함양군", "거창군", "합천군"]
 
-var taglabel='';
-var searchtaglabel='';
+var taglabel = '';
+var searchtaglabel = '';
+const currentDate = new Date();
 //var comp_image, comp_info, comp_tags="";
 
 export default class mainPage extends React.Component {
@@ -78,15 +80,19 @@ export default class mainPage extends React.Component {
             showAppyBtn: true, //메인페이지에서 봉사신청 버튼 (로그인하고, 봉사자 에게만 보여야 함)
             posts: [],
             info: '',
-            shelterIdnum:'',
-            info_name:'',
-            info_location:'',
-            info_animal:'',
-            volunteerText:null,
+            shelterIdnum: '',
+            info_name: '',
+            info_location: '',
+            info_animal: '',
+            volunteerText: null,
             tag_size: '',
-            comp_info:null,
-            comp_image:null,
-            post_id:null,
+            comp_info: null,
+            comp_image: null,
+            post_id: null,
+
+            start_date: new Date(),
+            end_date: new Date(),
+            max_date: new Date(currentDate.setMonth(currentDate.getMonth() + 1))
         }
         this.t = setInterval(() => {
             this.setState({ count: this.state.count + 1 });
@@ -94,12 +100,10 @@ export default class mainPage extends React.Component {
         clearInterval(this.t);
     }
 
-    
-
     _retrieveData = async () => {
         try {
             const value = await AsyncStorage.getItem('TOKEN');
-            
+
             if (value != null) {
                 this.setState({ jwt: value })
                 this.checkLogin()
@@ -175,29 +179,29 @@ export default class mainPage extends React.Component {
                 if (response.status == 200) {
                     //console.log("물결말고shelter번호:" , response.data[0].shelter_location);
                     //console.log(response.data);
-               
+
                     this._userRole();
                     //alert(response.data[2].shelter_name)
-                    this.setState({ 
+                    this.setState({
                         posts: response.data,
-                     })
-                     var cnt=1;
-                     for(var i = 0; i<response.data.length;i++){
-                         if(response.data[i].shelter==this.state.shelterIdnum){
-                             this.setState({
-                                 post_id:response.data[i].id,
-                             })
-                             cnt++;
-                         }else if(cnt==1){
-                             this.setState({
-                                 post_id:null,
-                             })
-                         }
-                     }
+                    })
+                    var cnt = 1;
+                    for (var i = 0; i < response.data.length; i++) {
+                        if (response.data[i].shelter == this.state.shelterIdnum) {
+                            this.setState({
+                                post_id: response.data[i].id,
+                            })
+                            cnt++;
+                        } else if (cnt == 1) {
+                            this.setState({
+                                post_id: null,
+                            })
+                        }
+                    }
 
                     //  if(response.data[this.state.shelterIdnum]==null){
                     //      this.setState({post_id:null})
-                         
+
                     //  }else{
                     //      this.setState({post_id:response.data[this.state.shelterIdnum].id});
                     //      alert(response.data[this.state.shelterIdnum].shelter_name);
@@ -220,19 +224,19 @@ export default class mainPage extends React.Component {
             });
     }
 
-    getShelterInfo(){
+    getShelterInfo() {
         var shelter_id = (jwt_decode(this.state.jwt)["shelter"]);
-        axios('http://3.34.119.63/shelter/'+shelter_id+'/')
-            .then((response)=>{
-                if(response.status==200){
+        axios('http://3.34.119.63/shelter/' + shelter_id + '/')
+            .then((response) => {
+                if (response.status == 200) {
                     this.setState({
                         info_name: response.data.shelter_name,
                         info_location: response.data.loc_short,
-                        info_animal:response.data.status,
+                        info_animal: response.data.status,
                     })
                 }
             })
-            
+
     }
 
     getVolunPost() { //로그인을 안해도 글을 볼 수 있게 하기 위한 함수
@@ -241,8 +245,9 @@ export default class mainPage extends React.Component {
                 if (response.status == 200) {
                     //console.log("로그확인:");
                     //console.log(response.data);
-                    this.setState({ 
-                        posts: response.data })
+                    this.setState({
+                        posts: response.data
+                    })
                 }
             })
             .catch((error) => {
@@ -256,22 +261,23 @@ export default class mainPage extends React.Component {
             });
     }
 
-    getSearchPost(){
+    getSearchPost() {
         axios(`http://3.34.119.63/volunteer/?tags=${searchtaglabel}`)
             .then((response) => {
                 if (response.status == 200) {
-                    this.setState({ 
-                        posts: response.data })
+                    this.setState({
+                        posts: response.data
+                    })
                 }
                 alert(JSON.stringify(response.data))
             })
             .catch((error) => {
-               alert(error);
+                alert(error);
             });
-        searchtaglabel='';
+        searchtaglabel = '';
     }
 
-    getVolunPostId(){
+    getVolunPostId() {
         var config = {
             method: 'get',
             url: `http://3.34.119.63/volunteer/${this.state.post_id}/`,
@@ -288,10 +294,12 @@ export default class mainPage extends React.Component {
                     this.setState({
                         comp_image: response.data.image,
                         comp_info: response.data.information,
-                      
-                        
+
+                        image: response.data.image,
+                        volunteerText: response.data.information
+
                     })
-              
+
                     // for(var i=0; i<response.data.tags.length;i++){
                     //     get_tags[i]=response.data.tags[i]["text"];
                     //     comp_tags+=response.data.tags[i]["text"]+", ";
@@ -300,11 +308,11 @@ export default class mainPage extends React.Component {
                     //comp_info=response.data.info;
                 }
                 else {
-                    console.log(response.statusText);
-                
+                    console.log(response);
+
                 }
                 //alert(response.data.information);
-      
+
             })
 
             .catch((error) => {
@@ -312,7 +320,7 @@ export default class mainPage extends React.Component {
                     comp_image: response.data.image,
                     comp_info: response.data.information,
                 })
-                console.log(error.response)
+                console.log(error)
             });
     }
 
@@ -355,7 +363,7 @@ export default class mainPage extends React.Component {
     );
 
     _renderButton2 = (text, onPress) => (
-        
+
         <TouchableOpacity
             onPress={onPress} >
             <View style={styles.button}>
@@ -374,7 +382,7 @@ export default class mainPage extends React.Component {
 
     _imageLoad = () => {
         let { image } = this.state;
-        
+
         if (image != null) {
             return (
                 <TouchableOpacity style={{ width: 350, height: 250, borderWidth: 0.3, }} onPress={this._pickImage}>
@@ -407,9 +415,9 @@ export default class mainPage extends React.Component {
         })
     }
 
-    SearchTag=()=>{
-        for(var i =0 ; i<this.tag.itemsSelected.length ; i++){
-            searchtaglabel+=this.tag.itemsSelected[i]["label"]+", "
+    SearchTag = () => {
+        for (var i = 0; i < this.tag.itemsSelected.length; i++) {
+            searchtaglabel += this.tag.itemsSelected[i]["label"] + ", "
         }
         alert(searchtaglabel)
         this.getSearchPost();
@@ -417,49 +425,49 @@ export default class mainPage extends React.Component {
 
     CheckTag = () => {
 
-        if(this.tag1.itemsSelected.length == 0){
+        if (this.tag1.itemsSelected.length == 0) {
             alert("'모집상태'를 선택해야합니다.");
             return 0;
         }
 
-        for(var i =0 ; i<this.tag1.itemsSelected.length ; i++){
-            taglabel+=this.tag1.itemsSelected[i]["label"]+", "
+        for (var i = 0; i < this.tag1.itemsSelected.length; i++) {
+            taglabel += this.tag1.itemsSelected[i]["label"] + ", "
         }
 
-        if(this.tag1.itemsSelected.length!=1){
-            if(this.tag1.itemsSelected[0]["id"] == 1 && this.tag1.itemsSelected[1]["id"] == 2 ||
-                this.tag1.itemsSelected[0]["id"] != 1 && this.tag1.itemsSelected[0]["id"] != 2){
+        if (this.tag1.itemsSelected.length != 1) {
+            if (this.tag1.itemsSelected[0]["id"] == 1 && this.tag1.itemsSelected[1]["id"] == 2 ||
+                this.tag1.itemsSelected[0]["id"] != 1 && this.tag1.itemsSelected[0]["id"] != 2) {
                 alert("모집상태는 1개만 선택할 수 있습니다.");
             }
-            else if(this.tag1.itemsSelected[0]["id"] ==2 && this.tag1.itemsSelected[1]["id"] ==3){
+            else if (this.tag1.itemsSelected[0]["id"] == 2 && this.tag1.itemsSelected[1]["id"] == 3) {
                 alert("'모집종료'상태에서는 '급구'를 선택할 수 없습니다.");
             }
             else {
                 this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
                 //comp_tag로 수정해야함
-                if(this.state.post_id==null){
+                if (this.state.post_id == null) {
                     this.post_volunteer();
                 }
-                else{
+                else {
                     this.patch_volunteer();
                 }
             }
-        }else{
-            if( this.tag1.itemsSelected[0]['id'] == 1 || this.tag1.itemsSelected[0]['id'] == 2){
+        } else {
+            if (this.tag1.itemsSelected[0]['id'] == 1 || this.tag1.itemsSelected[0]['id'] == 2) {
                 this.setState({ visibleModal: null, /*image: null 버튼 누르면 기존 이미지 지우도록*/ });
-                
-                if(this.state.post_id==null){
+
+                if (this.state.post_id == null) {
                     this.post_volunteer();
                 }
-                else{
+                else {
                     this.patch_volunteer();
                 }
             }
-            else{
+            else {
                 alert("'모집상태'를 선택해야합니다.");
             }
         }
-      
+
     };
 
 
@@ -479,7 +487,7 @@ export default class mainPage extends React.Component {
         if (this.state.image !== this.state.comp_image) {
             formData.append('image', photo);
         }
-        
+
         formData.append('tags', taglabel);
 
         var config = {
@@ -495,17 +503,17 @@ export default class mainPage extends React.Component {
         axios(config)
             .then((response) => {
                 if (response.status == 200) {
-                  alert(response.status)
+                    alert(response.status)
                 }
                 else {
                     alert(response.status)
                 }
             })
             .catch((error) => {
-                alert("tq"+error);
+                alert("tq" + error);
                 console.log("shelterForm error:" + error)
             });
-         taglabel='';
+        taglabel = '';
 
     }
 
@@ -518,9 +526,9 @@ export default class mainPage extends React.Component {
             type: 'image/jpg',
             name: 'photo.jpg'
         }
-        
+
         formdata.append("image", photo)
-        formdata.append("information",this.state.volunteerText)
+        formdata.append("information", this.state.volunteerText)
         formdata.append("tags", taglabel);
 
         fetch(url, {
@@ -533,10 +541,10 @@ export default class mainPage extends React.Component {
             body: formdata,
         }).then((response) => {
             if (response.status == 201) {
-                
+
                 alert(response.status)
                 alert(response.data.message)
-   
+
             }
             else if (response.status == 400) {
                 alert(response.data.message)
@@ -545,17 +553,17 @@ export default class mainPage extends React.Component {
         }).catch((e) => {
             console.log(e);
         });
-        taglabel='';
-  
+        taglabel = '';
+
     }
 
-    
 
-  
+
+
     _userRole = () => {
         var decoded = (jwt_decode(this.state.jwt)["user_role"]);
         var user_id = (jwt_decode(this.state.jwt)["shelter"]);
-        
+
         console.log(decoded)
 
         if (decoded == "2") {
@@ -568,10 +576,11 @@ export default class mainPage extends React.Component {
     }
 
 
-    
+
 
     render() {
         //const { navigate } = this.props.navigation;
+
         return (
             <View style={styles.backScreen}>
                 <View style={{ paddingTop: 30, flex: 1 }}>
@@ -652,13 +661,15 @@ export default class mainPage extends React.Component {
                     </View>
                     <View>
                         <TouchableOpacity style={styles.searchBtn} onPress={() => {
-                             {this.tag.itemsSelected.map((item, i) => {
-                                     return <selectedArray label={item} key={`${i}+1`} value={i} />
-                             })}
-                            
+                            {
+                                this.tag.itemsSelected.map((item, i) => {
+                                    return <selectedArray label={item} key={`${i}+1`} value={i} />
+                                })
+                            }
+
                             //this.state.selectedArray = this.tag.itemsSelected[0]["label"]
                             //Alert.alert('Selected items:', JSON.stringify(this.state.selectedArray));
-                            
+
                             this.SearchTag()
                         }}>
                             <Text style={styles.searchBtnText}>
@@ -671,29 +682,29 @@ export default class mainPage extends React.Component {
 
                     <FlatList
                         keyExtractor={item => item.id}
-                         
+
                         data={this.state.posts}
                         renderItem={({ item }) => (
-                            
+
                             <Card style={styles.cardStyle}>
                                 <TouchableOpacity onPress={() => {
-                                    this.setState({shelterId:item.shelter})
+                                    this.setState({ shelterId: item.shelter })
                                     SyncStorage.set('SHELTERID', item.shelter);
-                                    SyncStorage.set('THUMBNAIL', item.shelter_thumbnail );
+                                    SyncStorage.set('THUMBNAIL', item.shelter_thumbnail);
                                     this.props.navigation.navigate('aboutAgency')
-                            
+
                                 }}>
 
                                     <CardItem cardBody>
                                         {item.image == null ?
                                             (<Image
                                                 source={require('./assets/icon.png')}
-                                                style={{ height: screenHeight/3, width: null, flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, }}
+                                                style={{ height: screenHeight / 3, width: null, flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, }}
                                             />) :
                                             (
                                                 <Image
                                                     source={{ uri: item.image }}
-                                                    style={{ height: screenHeight/3, width: null, flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, }}
+                                                    style={{ height: screenHeight / 3, width: null, flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, }}
                                                 />
                                             )}
 
@@ -701,7 +712,7 @@ export default class mainPage extends React.Component {
                                 </TouchableOpacity>
                                 <CardItem>
                                     <Left>
-                                        <Thumbnail source={{uri: 'https://mulgyeol-static-storage.s3.ap-northeast-2.amazonaws.com/' + item.shelter_thumbnail }} />
+                                        <Thumbnail source={{ uri: 'https://mulgyeol-static-storage.s3.ap-northeast-2.amazonaws.com/' + item.shelter_thumbnail }} />
                                         <Body>
                                             <View flexDirection="row">
                                                 <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
@@ -724,37 +735,37 @@ export default class mainPage extends React.Component {
                                         <Text style={{ fontSize: 15, fontWeight: '400' }}> {item.shelter_status}</Text>
                                     </Right>
                                 </CardItem>
-                                
-                                <CardItem style={{marginTop:-(screenHeight/17), marginBottom:-10}}>
-                                    
+
+                                <CardItem style={{ marginTop: -(screenHeight / 17), marginBottom: -10 }}>
+
                                     <ScrollView>
-                                    <View style={{ flexDirection: 'row'}}>
-                                        {item.tags.slice(0, 4).map((tags) =>
-                                            <View style={styles.tag_shape}>
-                                                <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
-                                                    {tags["text"]}
-                                                </Text>
-                                            </View>
-                                        )}
-                                    </View>
-                                    <View style={{ flexDirection: 'row', marginTop: 5}}>
-                                        {item.tags.slice(4, 8).map((tags) =>
-                                            <View style={styles.tag_shape}>
-                                                <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
-                                                    {tags["text"]}
-                                                </Text>
-                                            </View>
-                                        )}
-                                    </View>
-                                    <View style={{ flexDirection: 'row', marginTop: 5}}>
-                                        {item.tags.slice(8, 12).map((tags) =>
-                                            <View style={styles.tag_shape}>
-                                                <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
-                                                    {tags["text"]}
-                                                </Text>
-                                            </View>
-                                        )}
-                                    </View>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            {item.tags.slice(0, 4).map((tags) =>
+                                                <View style={styles.tag_shape}>
+                                                    <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
+                                                        {tags["text"]}
+                                                    </Text>
+                                                </View>
+                                            )}
+                                        </View>
+                                        <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                                            {item.tags.slice(4, 8).map((tags) =>
+                                                <View style={styles.tag_shape}>
+                                                    <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
+                                                        {tags["text"]}
+                                                    </Text>
+                                                </View>
+                                            )}
+                                        </View>
+                                        <View style={{ flexDirection: 'row', marginTop: 5 }}>
+                                            {item.tags.slice(8, 12).map((tags) =>
+                                                <View style={styles.tag_shape}>
+                                                    <Text style={{ fontSize: 13.5, fontWeight: "300" }}>
+                                                        {tags["text"]}
+                                                    </Text>
+                                                </View>
+                                            )}
+                                        </View>
                                     </ScrollView>
                                 </CardItem>
                                 <CardItem>
@@ -786,6 +797,51 @@ export default class mainPage extends React.Component {
                                 <Text style={{ fontSize: 15 }}> {this.state.info_location}</Text>
                                 <Text style={{ fontSize: 15 }}> {this.state.info_animal}</Text>
                             </View>
+                            <View style={{ flexDirection: "row",}}>
+                                <DatePicker
+                                    style={{ width: 200 }}
+                                    date={this.state.start_date}
+                                    mode="date"
+                                    placeholder="select date"
+                                    format="YYYY-MM-DD"
+                                    minDate={this.state.start_date}
+                                    maxDate={this.state.max_date}
+                                    confirmBtnText="확인"
+                                    cancelBtnText="취소"
+                                    customStyles={{
+                                        dateIcon: {
+                                            position: 'absolute',
+                                            left: 0,
+                                            top: 4,
+                                            marginLeft: 0
+                                        },
+                                        dateInput: {
+                                            marginLeft: 40
+                                        }
+                                        // ... You can check the source to find the other keys.
+                                    }}
+                                    onDateChange={(date) => { this.setState({ start_date: date }) }}
+                                />
+                                <Text> ~</Text>
+                                <DatePicker
+                                    style={{ width: 200 }}
+                                    date={this.state.end_date}
+                                    mode="date"
+                                    placeholder="select date"
+                                    format="YYYY-MM-DD"
+                                    minDate={this.state.start_date}
+                                    maxDate={this.state.max_date}
+                                    confirmBtnText="확인"
+                                    cancelBtnText="취소"
+                                    customStyles={{
+                                        dateInput: {
+                                            marginLeft: 3,
+                                            marginRight: 3
+                                        }
+                                    }}
+                                    onDateChange={(date) => { this.setState({ end_date: date }) }}
+                                />
+                            </View>
 
                             <View style={{ paddingLeft: 10 }}>
                                 <TagSelect
@@ -799,7 +855,7 @@ export default class mainPage extends React.Component {
                                     }}
                                 />
                             </View>
-                          
+
                             <TextInput
                                 multiline
                                 numberOfLines={3}
@@ -818,16 +874,18 @@ export default class mainPage extends React.Component {
                 </Modal>
 
 
-                {this.state.showBongBtn ? (
-                    <View style={styles.fab}>
-                        {this._renderButton1('봉', () =>{
-                            this.setState({ visibleModal: 1 });
-                           this.getVolunPostId();
-                        })}
-                    </View>
-                ) : null}
+                {
+                    this.state.showBongBtn ? (
+                        <View style={styles.fab}>
+                            {this._renderButton1('봉', () => {
+                                this.setState({ visibleModal: 1 });
+                                this.getVolunPostId();
+                            })}
+                        </View>
+                    ) : null
+                }
 
-            </View>
+            </View >
 
 
         );
@@ -997,7 +1055,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignContent: 'center',
         alignItems: 'center',
-        
+
     },
     info: {
 

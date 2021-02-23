@@ -61,6 +61,7 @@ export default class myVolunteer extends Component {
                 }
             })
             .catch((error) => {
+             
                 console.log(error)
             });
     }
@@ -78,7 +79,6 @@ export default class myVolunteer extends Component {
               NavigationActions.navigate('TabNav')
             ],
           });
-
         this.props.navigation.dispatch(resetAction);
         this.props.navigation.navigate("mainPage")*/
 
@@ -100,10 +100,10 @@ export default class myVolunteer extends Component {
         this._retrieveData();
     }
 
-    _handleOpenWithLinking = () => {
-        Linking.openURL(this.state.chatURL);
+    _handleOpenWithLinking = (link) => {
+        Linking.openURL(link);
         //console.log(this.state.chatURL + " !!")
-        //alert(this.state.chatURL)
+        // alert(link)
     };
 
     render() {
@@ -127,14 +127,17 @@ export default class myVolunteer extends Component {
                                 <View style={styles.forwidth_right}>
                                     <TouchableOpacity                                     
                                     style={styles.URLBtn}
-                                    onPress={this._handleOpenWithLinking}
-                                    >
+                                 >
                                         {item.shelter_chat_url == "" ?
                                             (
                                                 <Text>카톡 없음</Text>
                                             ) :
                                             (
-                                                <Text style={styles.URLBtnText}> 보호소 카톡</Text>
+                                                <Text style={styles.URLBtnText}    
+                                                onPress={() => {
+                                                    // this.setState({ chatURL:item.shelter_chat_url }),
+                                                    this._handleOpenWithLinking(item.shelter_chat_url)
+                                                    }} > 보호소 카톡</Text>
                                             )}
                                     </TouchableOpacity>
                                 </View>

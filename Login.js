@@ -12,8 +12,8 @@ export default class Login extends Component {
         this.state = {
             //id: 'shunnyjang',
             //pw: 'shunnyjang',
-            id: 'E',
-            pw: 'E'
+            id: 'du',
+            pw: 'du'
         }
         this.onLogin = this.onLogin.bind(this);
     }

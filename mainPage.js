@@ -786,6 +786,7 @@ export default class mainPage extends React.Component {
                             {this._renderButton3('X', () => this.setState({ visibleModal: null, }))}
                         </View>
                         <View style={styles.modalContent}>
+                            <ScrollView>
                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                 <View style={{ paddingBottom: 10, paddingTop: 20 }}>
                                     {this._imageLoad()}
@@ -797,9 +798,9 @@ export default class mainPage extends React.Component {
                                 <Text style={{ fontSize: 15 }}> {this.state.info_location}</Text>
                                 <Text style={{ fontSize: 15 }}> {this.state.info_animal}</Text>
                             </View>
-                            <View style={{ flexDirection: "row",}}>
+                            <View style={{ flexDirection: "row",  justifyContent: "center", alignContent: "center", marginBottom:15}}>
                                 <DatePicker
-                                    style={{ width: 200 }}
+                                    style={{ width: (screenWidth/5)*2 }}
                                     date={this.state.start_date}
                                     mode="date"
                                     placeholder="select date"
@@ -824,7 +825,7 @@ export default class mainPage extends React.Component {
                                 />
                                 <Text> ~</Text>
                                 <DatePicker
-                                    style={{ width: 200 }}
+                                    style={{ width: (screenWidth/5)*2 }}
                                     date={this.state.end_date}
                                     mode="date"
                                     placeholder="select date"
@@ -834,22 +835,27 @@ export default class mainPage extends React.Component {
                                     confirmBtnText="확인"
                                     cancelBtnText="취소"
                                     customStyles={{
+                                        dateIcon: {
+                                            position: 'absolute',
+                                            left: 0,
+                                            top: 4,
+                                            marginLeft: 0
+                                        },
                                         dateInput: {
-                                            marginLeft: 3,
-                                            marginRight: 3
+                                            marginLeft: 40
                                         }
+                                        // ... You can check the source to find the other keys.
                                     }}
                                     onDateChange={(date) => { this.setState({ end_date: date }) }}
                                 />
                             </View>
-
-                            <View style={{ paddingLeft: 10 }}>
+                            <View style={{ paddingLeft: 16 }}>
                                 <TagSelect
 
                                     data={tagData}
                                     max={12}
                                     itemStyle={{ backgroundColor: "#E9ECEF", }}
-                                    itemLabelStyle={{ fontSize: 11.4 }}
+                                    itemLabelStyle={{ fontSize: 12 }}
                                     ref={(tag1) => {
                                         this.tag1 = tag1;
                                     }}
@@ -863,11 +869,11 @@ export default class mainPage extends React.Component {
                                 placeholderTextColor="#3A4C7F"
                                 height={85}
                                 maxLength={75}
-                                style={{ textAlign: "center", padding: 10 }}
+                                style={{ textAlign: "center", padding: 10, marginBottom:10 }}
                                 onChangeText={(volunteerText => this.setState({ volunteerText }))}
                                 value={this.state.volunteerText}>
                             </TextInput>
-
+                            </ScrollView>
                         </View>
 
                     </KeyboardAvoidingScrollView>
@@ -985,8 +991,8 @@ const styles = StyleSheet.create({
     modalContent: {
 
         backgroundColor: 'white',
-        marginTop: 40,
-        height: 560,
+        marginTop: 45,
+        height: (screenHeight/5)*4,
         //padding: 22,
         justifyContent: 'center',
         //alignItems: 'center',

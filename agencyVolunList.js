@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios'
+import { FlatList } from 'react-native-gesture-handler';
 
 export default class agencyVolunList extends Component {
     
@@ -17,6 +18,10 @@ export default class agencyVolunList extends Component {
             image: null,
             chat_url: '',
             name:'',
+
+            posts:[],
+            name_vol:'',
+            date:'',
         }
     }
     _retrieveData = async () => {
@@ -56,15 +61,18 @@ export default class agencyVolunList extends Component {
             url: 'http://3.34.119.63/volunteer/status/',
             headers: { 
               'Authorization': `jwt ${this.state.jwt}`
+              
             }
           };
           
         axios(config)
         .then((response) => {
             if (response.status == 200) {
-                console.log("로그확인:", this.state.jwt)
-                console.log(response.data);
-                //loading:true
+                
+                this.setState({
+                   posts:response.data,
+                })
+            
             }
             else {
                 console.log("status is not 200");
@@ -141,6 +149,7 @@ export default class agencyVolunList extends Component {
     }
 
     render() {
+
         return (
             <View style={styles.backScreen}>
                 <View style={styles.backScreen}>
@@ -151,7 +160,7 @@ export default class agencyVolunList extends Component {
                         </View>
                        
                         <View>
-                            <Text style={{textAlign:"center", fontSize:20, fontWeight:'400'}}>{this.state.name}</Text>
+                            <Text style={{textAlign:"center", fontSize:20, fontWeight:''}}>{this.state.name}</Text>
                             <TouchableOpacity
                                 title="Open URL with ReactNative.Linking"
                                 onPress={this._handleOpenWithLinking}
@@ -161,15 +170,26 @@ export default class agencyVolunList extends Component {
                         </View>
                     </View>
 
-
-
+                   
                     <ScrollView>
                         <View style={styles.list}>
                             <View style={styles.forwidth_left}>
 
-                                <Text style={styles.agencyText}> 봉사자 이름</Text>
-                                <Text style={styles.dateText}> 신청 날짜</Text>
-
+                                <FlatList
+                                    keyExtractor={item => item.id}
+                                    data={this.state.posts}
+                                    renderItem={({ item }) => (
+                                        <View>
+                                            <Text style={styles.dateText}>{item.date} (신청 인원:{item.current_number})</Text>
+                                            {item.applicant.map((value,index) => {
+                                                return <Text key = {index} style={styles.agencyText}>봉사자 {index+1}. {value.slice(4,)}</Text>
+                                            })}
+                                            
+                                        </View>  
+                                        
+                                        
+                                    )}
+                                />
                             </View>
                         </View>
                     </ScrollView>
@@ -208,7 +228,7 @@ const styles = StyleSheet.create({
     },
 
     forwidth_left: {
-        width: '60%',
+        width: '100%',
         textAlign: 'center',
         justifyContent: 'center',
         marginLeft: 40
@@ -234,7 +254,7 @@ const styles = StyleSheet.create({
     },
 
     list: {
-        width: '80%',
+        width: '100%',
         flexDirection: 'row',
         borderBottomColor: '#e3e3e1',
         // borderBottomWidth:2 ,
@@ -257,13 +277,17 @@ const styles = StyleSheet.create({
     },
 
     agencyText: {
+        fontSize:16,
 
     },
 
     dateText: {
-
+        fontSize:18,
+        
     },
+    
 
+  
     URLbox: {
         backgroundColor: '#81BEF7',
         color: '#FFF',

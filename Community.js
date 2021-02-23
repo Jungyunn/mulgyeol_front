@@ -311,15 +311,16 @@ export default class Community extends Component {
         axios(config)
             .then((response) => {
                if(response.status==200){
+
                    this.setState({
                        image:response.data.image,
-                       commuText:response.data.information,
+                       commuText:response.data.content,
+                       postId:itemid,
                    })
-                 
+                  
                }
+               
             })
-            //.then(response=> console.log(response.data))
-
             .catch((error) => {
                 console.log(error.response)
             });
@@ -423,7 +424,7 @@ export default class Community extends Component {
                 />
 
                 <Modal isVisible={this.state.visibleModal === 1}>
-                    <KeyboardAvoidingScrollView stickyFooter={this._renderButton2('새로운 소식 알리기', () => {this.setState({ visibleModal: null }), this.postORpatch()})}>
+                    <KeyboardAvoidingScrollView stickyFooter={this._renderButton2('새로운 소식 알리기', () => {this.setState({ visibleModal: null}), this.postORpatch()})}>
                         <View style={styles.fab2}>
                             {this._renderButton3('X', () => this.setState({ visibleModal: null, }))}
                         </View>

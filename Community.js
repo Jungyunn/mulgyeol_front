@@ -36,6 +36,9 @@ export default class Community extends Component {
             shelterNum: '',
             commuData: [],
             postId: '',
+
+            comp_image: null,
+            comp_commuText: null
         };
     }
 
@@ -249,6 +252,74 @@ export default class Community extends Component {
       
     }
 
+    patch_community(){
+        const fileURL = this.state.image
+
+        let formdata = new FormData();
+         var photo = {
+             uri: Platform.OS === 'android' ? fileURL : fileURL.replace('file://', ''),
+             type: 'image/jpg',
+             name: 'photo.jpg'
+         }
+        
+         /*
+        if(this.state.commuText !== this.state.comp_commuText){
+            formdata.append("content", this.state.commuText);
+        }
+        if(this.state.image !== this.state.comp_image){
+            formdata.append("image", photo);
+        } 
+        */
+       formdata.append("content", this.state.commuText);  
+       formdata.append("image", photo);    
+        
+        var config = {
+            method: 'patch',
+            url: `http://3.34.119.63/community/${this.state.postId}/`,
+            headers: {
+                Accept: "application/json",
+                'Content-Type': 'multipart/form-data',
+                'Authorization': `jwt ${this.state.jwt}`
+            },
+            data: formdata
+        };
+        axios(config)
+            .then((response) => {
+                if (response.status == 200) {
+                    alert(response.status)
+                }
+                else {
+                    alert(response.status)
+                }
+            })
+            .catch((error) => {
+                console.log(error.resp)
+            });
+       
+    }
+
+    
+    get_commuPostId(){
+        var config = {
+            method: 'get',
+            url: `http://3.34.119.63/community/${this.state.postId}/`,
+            headers: {
+                'Authorization': `jwt ${this.state.jwt}`
+            }
+        };
+
+        axios(config)
+            .then((response) => {
+                console.log(response)
+            })
+            //.then(response=> console.log(response.data))
+
+            .catch((error) => {
+                console.log(error.response)
+            });
+
+    }
+
     
     delete_commuPost(){
         var config = {
@@ -270,6 +341,15 @@ export default class Community extends Component {
             });
 
     }
+
+    postORpatch(){
+        if(this.state.postId == null){
+            this.post_community();
+        }
+        else{
+            this.patch_community();
+        }
+    }
     
 
     render() {
@@ -287,6 +367,16 @@ export default class Community extends Component {
                                     <Body>
                                         <View flexDirection="row">
                                             <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
+                                            <TouchableOpacity style={{ position: "absolute", right: 50 }} 
+                                            onPress={() => {this.setState({postId: item.id, visibleModal: 1});} 
+                                                            }>
+
+                                                {this.state.showDeleteText ? (
+                                                    <Text style={{ color: "#5f5f5f", fontSize: 16 }}>수정</Text>
+
+                                                ) : null }                
+                                                
+                                            </TouchableOpacity>
                                             <TouchableOpacity style={{ position: "absolute", right: 0 }} 
                                             onPress={() => {this.setState({postId: item.id});     
                                                             Alert.alert('삭제', '삭제하시겠습니까?', 
@@ -327,7 +417,7 @@ export default class Community extends Component {
                 />
 
                 <Modal isVisible={this.state.visibleModal === 1}>
-                    <KeyboardAvoidingScrollView stickyFooter={this._renderButton2('새로운 소식 알리기', () => {this.setState({ visibleModal: null }), this.post_community()})}>
+                    <KeyboardAvoidingScrollView stickyFooter={this._renderButton2('새로운 소식 알리기', () => {this.setState({ visibleModal: null }), this.postORpatch()})}>
                         <View style={styles.fab2}>
                             {this._renderButton3('X', () => this.setState({ visibleModal: null, }))}
                         </View>

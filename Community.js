@@ -299,10 +299,10 @@ export default class Community extends Component {
     }
 
     
-    get_commuPostId(){
+    get_commuPostId= (itemid) => {
         var config = {
             method: 'get',
-            url: `http://3.34.119.63/community/${this.state.postId}/`,
+            url: `http://3.34.119.63/community/${itemid}/`,
             headers: {
                 'Authorization': `jwt ${this.state.jwt}`
             }
@@ -310,7 +310,13 @@ export default class Community extends Component {
 
         axios(config)
             .then((response) => {
-                console.log(response)
+               if(response.status==200){
+                   this.setState({
+                       image:response.data.image,
+                       commuText:response.data.information,
+                   })
+                 
+               }
             })
             //.then(response=> console.log(response.data))
 
@@ -368,12 +374,12 @@ export default class Community extends Component {
                                         <View flexDirection="row">
                                             <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>
                                             <TouchableOpacity style={{ position: "absolute", right: 50 }} 
-                                            onPress={() => {this.setState({postId: item.id, visibleModal: 1});} 
-                                                            }>
-
+                                                                onPress={() => {
+                                                                    this.get_commuPostId(item.id),
+                                                                    this.setState({visibleModal: 1})
+                                                                    }}>
                                                 {this.state.showDeleteText ? (
                                                     <Text style={{ color: "#5f5f5f", fontSize: 16 }}>수정</Text>
-
                                                 ) : null }                
                                                 
                                             </TouchableOpacity>

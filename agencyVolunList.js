@@ -283,10 +283,7 @@ const styles = StyleSheet.create({
 
     dateText: {
         fontSize:18,
-        
     },
-    
-
   
     URLbox: {
         backgroundColor: '#81BEF7',
@@ -301,7 +298,6 @@ const styles = StyleSheet.create({
         textAlignVertical: "center",
         justifyContent: "center",
         textAlign: "center",
-
     },
 
     logoutBtn: {

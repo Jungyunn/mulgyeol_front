@@ -319,7 +319,7 @@ export default class Community extends Component {
                    })
                   
                }
-               
+
             })
             .catch((error) => {
                 console.log(error.response)
@@ -457,7 +457,7 @@ export default class Community extends Component {
                 {this.state.showBongBtn ? (
                     <View style={styles.fab}>
                         {this._renderButton1('커', () =>
-                            this.setState({ visibleModal: 1 }))}
+                            this.setState({ image:null, commuText:null, postId:null, visibleModal: 1 }))}
                     </View>
                 ) : null}
 

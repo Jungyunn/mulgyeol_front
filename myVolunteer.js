@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { Button, Linking, View, StyleSheet, Text, TouchableOpacity, AsyncStorage } from 'react-native';
+
+import { Button, Linking, View, StyleSheet, ScrollView, Text,  Dimensions, TouchableOpacity, AsyncStorage } from 'react-native';
 import Constants from 'expo-constants';
 import axios from 'axios'
 import { StackActions, NavigationActions, SwitchActions } from 'react-navigation';
 import { Card, CardItem, Thumbnail, Body, Left, Right } from 'native-base'
 import { FlatList } from 'react-native-gesture-handler';
 
+const screenWidth = Math.round(Dimensions.get('window').width);
+const screenHeight = Math.round(Dimensions.get('window').height);
 
 export default class myVolunteer extends Component {
 
@@ -112,6 +115,9 @@ export default class myVolunteer extends Component {
 
                 <View>
                     <Text style={styles.title}> 나의 봉사 내역 </Text>
+                    </View>
+                    <ScrollView>
+                        <View style={styles.list}>
                     <FlatList
                         keyExtractor={item => item.id}
                         data={this.state.volunData}
@@ -124,7 +130,7 @@ export default class myVolunteer extends Component {
                                         <Text>{item.applying_date}</Text>
                                     </View>
                                 </View>
-                                <View style={styles.forwidth_right}>
+                                <View style={{marginRight:40}}>
                                     <TouchableOpacity                                     
                                     style={styles.URLBtn}
                                  >
@@ -142,8 +148,11 @@ export default class myVolunteer extends Component {
                                     </TouchableOpacity>
                                 </View>
                             </View>
+                                            
                         )}
                     />
+                    </View>
+                    </ScrollView>
                     <View>
                         <TouchableOpacity style={styles.logoutBtn} onPress={() => this._signOut()}>
                             <Text style={styles.logoutBtnText}>로그아웃하기</Text>
@@ -152,7 +161,7 @@ export default class myVolunteer extends Component {
                 </View>
 
 
-            </View>
+
         );
     }
 }
@@ -180,18 +189,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
 
     },
-    forwidth_right: {
-        width: '45%',
-        justifyContent: 'center'
-    },
+
+   
+    
     URLBtn: {
         backgroundColor: '#7599FF',
         color: '#FFF',
         height: 40,
+        width: screenWidth/5,
         alignItems: 'center',
         borderRadius: 15,
-        marginLeft: 35,
-        marginRight: 35,
+        marginLeft: 30,
+        marginRight: 30,
         marginTop: 15,
         marginBottom: 20,
         textAlignVertical: "center",
@@ -205,14 +214,14 @@ const styles = StyleSheet.create({
     },
 
     list: {
-        width: '80%',
+        width: '100%',
         flexDirection: 'row',
         borderBottomColor: '#e3e3e1',
         // borderBottomWidth:2 ,
         paddingTop: 30,
         paddingBottom: 0,
         alignContent: 'center',
-
+        paddingRight:screenWidth/20,
         //marginTop: 3,
         //width: screenWidth / 2 - 30,
         //marginRight: 20      

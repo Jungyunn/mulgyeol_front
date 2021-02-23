@@ -13,7 +13,7 @@ export default class myVolunteer extends Component {
         super(props);
         this.state = {
             jwt: null,
-            chatURL: '',
+            chatURL: 'default',
             volunData: [],
         }
     }
@@ -27,6 +27,7 @@ export default class myVolunteer extends Component {
                 //this.state.jwt = value;
                 this.setState({ jwt: value })
                 this.getMyVolunList()
+                //alert(this.state.chatURL)
             }
             else {
                 console.log("token이 없습니다!")
@@ -50,8 +51,9 @@ export default class myVolunteer extends Component {
             .then((response) => {
                 if (response.status == 200) {
                     console.log(response.data);
-                    //this.setState({ volunData: response.data })
-                    //this.setState({ chatURL: response.data[0].shelter_chat_url})
+                    console.log(response.data[1].shelter_chat_url);
+                    this.setState({ 
+                        volunData: response.data, chatURL: response.data[1].shelter_chat_url})
                 }
                 else {
                     console.log("NOT 200");
@@ -98,6 +100,12 @@ export default class myVolunteer extends Component {
         this._retrieveData();
     }
 
+    _handleOpenWithLinking = () => {
+        Linking.openURL(this.state.chatURL);
+        //console.log(this.state.chatURL + " !!")
+        //alert(this.state.chatURL)
+    };
+
     render() {
         return (
             <View style={styles.backScreen}>
@@ -111,44 +119,39 @@ export default class myVolunteer extends Component {
                             <View style={styles.list}>
                                 <View style={styles.forwidth_left}>
                                     <Text style={styles.agencyText}> {item.shelter_name}</Text>
-                                    <Text style={styles.dateText}> {item.applied_at.slice(0, 10)}</Text>
-                                    {item.shelter_chat == "" ?
-                                        (
-                                            <Text>보호소 채팅 URL이 없습니다.</Text>
-                                        ) :
-                                        (
-                                            <TouchableOpacity
-                                                onPress={this._handleOpenWithLinking()}
-                                                style={styles.kakaoURL}>
-                                                <Text style={{ color: '#81BEF7', textDecorationLine: 'underline' }}> {item.shelter_chat_url}</Text>
-                                            </TouchableOpacity>
-                                        )}
-
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text>[신청날짜] </Text>
+                                        <Text>{item.applying_date}</Text>
+                                    </View>
                                 </View>
                                 <View style={styles.forwidth_right}>
-                                    <TouchableOpacity style={styles.cancelBtn} /*onPress={()=>this.props.navigation.navigate(" ")}*/>
-                                        <Text style={styles.cancelBtnText}>취소</Text>
+                                    <TouchableOpacity                                     
+                                    style={styles.URLBtn}
+                                    onPress={this._handleOpenWithLinking}
+                                    >
+                                        {item.shelter_chat_url == "" ?
+                                            (
+                                                <Text>카톡 없음</Text>
+                                            ) :
+                                            (
+                                                <Text style={styles.URLBtnText}> 보호소 카톡</Text>
+                                            )}
                                     </TouchableOpacity>
                                 </View>
                             </View>
-                             )}
-                             />
-                            <View>
-                                <TouchableOpacity style={styles.logoutBtn} onPress={() => this._signOut()}>
-                                    <Text style={styles.logoutBtnText}>로그아웃하기</Text>
-                                </TouchableOpacity>
-                            </View>
+                        )}
+                    />
+                    <View>
+                        <TouchableOpacity style={styles.logoutBtn} onPress={() => this._signOut()}>
+                            <Text style={styles.logoutBtnText}>로그아웃하기</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
 
             </View>
         );
     }
-
-    _handleOpenWithLinking = () => {
-        Linking.openURL(this.state.chatURL);
-    };
-
 }
 
 const styles = StyleSheet.create({
@@ -178,10 +181,10 @@ const styles = StyleSheet.create({
         width: '45%',
         justifyContent: 'center'
     },
-    cancelBtn: {
+    URLBtn: {
         backgroundColor: '#7599FF',
         color: '#FFF',
-        height: 60,
+        height: 40,
         alignItems: 'center',
         borderRadius: 15,
         marginLeft: 35,
@@ -193,9 +196,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
 
-    cancelBtnText: {
+    URLBtnText: {
         color: '#FFF',
-        fontSize: 20,
+        fontSize: 11,
     },
 
     list: {
@@ -223,14 +226,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
 
-    dateText: {
-
-    },
-
-    kakaoURL: {
-
-    },
-    
     logoutBtn: {
         backgroundColor: '#7599FF',
         color: '#FFF',
@@ -246,7 +241,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
 
-    logoutBtnText: {        
+    logoutBtnText: {
         color: '#FFF',
         paddingVertical: 12,
         textAlignVertical: "center",

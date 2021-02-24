@@ -46,7 +46,7 @@ const tagData = [
     { id: 12, label: '#기타봉사' },
 ];
 
-
+const regardless=[]
 const seoul_gu = ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구",
     "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구",
     "양춘구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"]
@@ -131,6 +131,10 @@ export default class mainPage extends React.Component {
         if (val == 'key3') {
             return gyeongnam_gu;
         }
+        if (val == 'key4') {
+            return regardless;
+        }
+        
     }
 
     onValueChange(value) {
@@ -265,14 +269,13 @@ export default class mainPage extends React.Component {
     }
 
     getSearchPost() {
-        axios(`http://3.34.119.63/volunteer/${searchtaglabel}`)
+        axios(`http://3.34.119.63/volunteer/${searchtaglabel}&location=${this.state.sido + this.state.sigu}`)
             .then((response) => {
                 if (response.status == 200) {
                     this.setState({
                         posts: response.data
                     })
                 }
-                alert(JSON.stringify(response.data))
             })
             .catch((error) => {
                 alert(error);
@@ -426,9 +429,11 @@ export default class mainPage extends React.Component {
         for (var i = 0; i < this.tag.itemsSelected.length; i++) {
             searchtaglabel += '?tag='+this.tag.itemsSelected[i]["label"]+'&'
         }
-        alert(searchtaglabel)
+        if(this.state.sigu=='지역무관') this.setState({sigu:null})
         this.getSearchPost();
     }
+
+
 
     CheckTag = () => {
 
@@ -607,6 +612,7 @@ export default class mainPage extends React.Component {
                                 selectedValue={this.state.sido}
                                 style={{ height: 50, width: 150 }}
                                 onValueChange={this.onValueChange.bind(this)}>
+                                <Picker.Item label="지역무관" value="key4" />
                                 <Picker.Item label="서울특별시" value="key1" />
                                 <Picker.Item label="경기도" value="key2" />
                                 <Picker.Item label="경상남도" value="key3" />

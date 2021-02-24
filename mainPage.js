@@ -47,16 +47,16 @@ const tagData = [
 ];
 
 const regardless=[]
-const seoul_gu = ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구",
+const seoul_gu = ['전체', "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구",
     "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구",
     "양춘구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"]
 
-const gyeong_gu = ["수원시", "성남시", "고양시", "용인시", "부천시", "안산시", "안양시", "남양주시", "화성시",
+const gyeong_gu = ['전체', "수원시", "성남시", "고양시", "용인시", "부천시", "안산시", "안양시", "남양주시", "화성시",
     "평택시", "의정부시", "시흥시", "파주시", "광명시", "김포시", "군포시", "광주시", "이천시",
     "양주시", "오산시", "구리시", "안성시", "포천시", "의왕시", "하남시", "여주시", "양평군",
     "동두천시", "과천시", "가평군", "연천군"]
 
-const gyeongnam_gu = ["창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군",
+const gyeongnam_gu = ['전체', "창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군",
     "창녕군", "고성군", "남해군", "하동군", "산청군", "함양군", "거창군", "합천군"]
 
 var taglabel = '';
@@ -751,14 +751,16 @@ export default class mainPage extends React.Component {
                                 </CardItem>
                                 <CardItem>
                                     <Left>
-                                        <Text style={{ fontSize: 15, fontWeight: '200' }}>{item.shelter_location}</Text>
-                                    </Left>
-                                    <Right>
-                                        <Text style={{ fontSize: 15, fontWeight: '400' }}> {item.shelter_status}</Text>
-                                    </Right>
+                                            <Text style={{ fontSize: 15, fontWeight: '200' }}>{item.shelter_location}</Text>
+                                                      
+                                    </Left> 
+                                        {this.state.showAppyBtn && item.tags[0]["text"]==="#모집중" ?
+                                            ( <Text style={{ fontSize: 15, fontWeight: '200' }}>{item.start_date} ~ {item.end_date} </Text>)  : null}
+                                       
+                                    
                                 </CardItem>
 
-                                <CardItem style={{ marginTop: -(screenHeight / 17), marginBottom: -10 }}>
+                                <CardItem >
 
                                     <ScrollView>
                                         <View style={{ flexDirection: 'row' }}>

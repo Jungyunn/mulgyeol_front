@@ -21,8 +21,8 @@ export default class volunteerDate extends Component {
       shelter: "sample",
       shelterNum: null,
       selectedDate: "",
-      start:"2021-02-23",
-      end:"2021-02-25",
+      start: "2021-02-23",
+      end: "2021-02-25",
     };
 
     //moment.locale('ko');
@@ -51,7 +51,6 @@ export default class volunteerDate extends Component {
 
   componentDidMount(){
     this._retrieveData();
-
   }
 
   onDateChange(date) {
@@ -76,6 +75,11 @@ export default class volunteerDate extends Component {
     .then((response) => {
       if(response.status == 200){
         console.log(response.data);
+        //console.log(response.data.length);
+        this.setState({
+          start: response.data[0].date,
+          end: response.data[(response.data.length) - 1].date
+        })
       }else {
         console.log("not 200");
       }

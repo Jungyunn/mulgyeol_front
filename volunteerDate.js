@@ -19,7 +19,7 @@ export default class volunteerDate extends Component {
     this.state = {
       jwt: null,
       shelter: "sample",
-      shelterNum: '1',
+      shelterNum: null,
       selectedDate: "",
       start:"2021-02-23",
       end:"2021-02-25",
@@ -33,8 +33,9 @@ export default class volunteerDate extends Component {
   _retrieveData = async () => {
     try {
         const value = await AsyncStorage.getItem('TOKEN');
-        const shelterId = SyncStorage.get('SHELTERID')
-        //this.setState({ shelterNum: shelterId })
+        const shelterID = SyncStorage.get('SHELTERID')
+        //alert(shelterID + "!!")
+        this.setState({ shelterNum: shelterID })
 
         if (value != null) {
             this.setState({ jwt: value })

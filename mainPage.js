@@ -424,14 +424,15 @@ export default class mainPage extends React.Component {
             )
         })
     }
-
+    
     SearchTag = () => {
         for (var i = 0; i < this.tag.itemsSelected.length; i++) {
             searchtaglabel += '?tag='+this.tag.itemsSelected[i]["label"]+'&'
         }
-        if(this.state.sigu=='지역무관') this.setState({sigu:null})
+        alert(searchtaglabel)
         this.getSearchPost();
     }
+
 
 
 
@@ -740,7 +741,10 @@ export default class mainPage extends React.Component {
                                                     {this.state.showAppyBtn && item.tags[0]["text"]==="#모집중" ?
                                                         (<TouchableOpacity
                                                             style={styles.regiBtn}
-                                                            onPress={() => this.props.navigation.navigate("volunteerDate")}>
+                                                            onPress={() => {
+                                                                this.props.navigation.navigate("volunteerDate"),
+                                                                SyncStorage.set('SHELTERID', item.shelter);
+                                                                }}>
                                                             <Text>봉사신청</Text>
                                                         </TouchableOpacity>) : null}
                                                 

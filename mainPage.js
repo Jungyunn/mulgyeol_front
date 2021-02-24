@@ -47,22 +47,22 @@ const tagData = [
 ];
 
 const regardless=[]
-const seoul_gu = ['전체', "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구",
+const seoul_gu = ["전체", "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구",
     "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구",
     "양춘구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"]
 
-const gyeong_gu = ['전체', "수원시", "성남시", "고양시", "용인시", "부천시", "안산시", "안양시", "남양주시", "화성시",
+const gyeong_gu = ["전체", "수원시", "성남시", "고양시", "용인시", "부천시", "안산시", "안양시", "남양주시", "화성시",
     "평택시", "의정부시", "시흥시", "파주시", "광명시", "김포시", "군포시", "광주시", "이천시",
     "양주시", "오산시", "구리시", "안성시", "포천시", "의왕시", "하남시", "여주시", "양평군",
     "동두천시", "과천시", "가평군", "연천군"]
 
-const gyeongnam_gu = ['전체', "창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군",
+const gyeongnam_gu = ["전체", "창원시", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군",
     "창녕군", "고성군", "남해군", "하동군", "산청군", "함양군", "거창군", "합천군"]
 
 var taglabel = '';
 var searchtaglabel = '';
 const currentDate = new Date();
-//var comp_image, comp_info, comp_tags="";
+var location_sido, location_sigu, location;
 
 export default class mainPage extends React.Component {
 
@@ -141,6 +141,7 @@ export default class mainPage extends React.Component {
         this.setState({
             sido: value
         });
+       
     }
     onValueChange2(value) {
         this.setState({
@@ -269,7 +270,9 @@ export default class mainPage extends React.Component {
     }
 
     getSearchPost() {
-        axios(`http://3.34.119.63/volunteer/${searchtaglabel}&location=${this.state.sido + this.state.sigu}`)
+        //axios(`http://3.34.119.63/volunteer/?tag=#모집중&location=경기도`)
+
+        axios(`http://3.34.119.63/volunteer/${searchtaglabel}location=${location}`)
             .then((response) => {
                 if (response.status == 200) {
                     this.setState({
@@ -429,7 +432,14 @@ export default class mainPage extends React.Component {
         for (var i = 0; i < this.tag.itemsSelected.length; i++) {
             searchtaglabel += '?tag='+this.tag.itemsSelected[i]["label"]+'&'
         }
-        if(this.state.sigu=='지역무관') this.setState({sigu:null})
+        if(this.state.sido=='key1') {location_sido='서울특별시'; location_sigu=seoul_gu[this.state.sigu]}
+        else if(this.state.sido=='key2') {location_sido='경기도'; location_sigu=gyeong_gu[this.state.sigu]}
+        else if(this.state.sido=='key3') {location_sido='경상남도'; location_sigu=gyeongnam_gu[this.state.sigu]}
+        
+        if(location_sigu=="전체") {location_sigu=''; location=location_sido}
+        else if(this.state.sido=='key4') {location=''}
+        else {location='location='+location_sido+' '+location_sigu}
+       
         this.getSearchPost();
     }
 
@@ -559,16 +569,17 @@ export default class mainPage extends React.Component {
             },
             body: formdata,
         }).then((response) => {
-            if (response.status == 201) {
+            if (response.status == 200) {
 
                 alert(response.status)
-                alert(response.data.message)
+                //alert(response.data.message)
 
             }
             else if (response.status == 400) {
                 alert(response.data.message)
                 alert(response.status)
             }
+            alert(response.status)
         }).catch((e) => {
             console.log(e);
         });
@@ -754,7 +765,7 @@ export default class mainPage extends React.Component {
                                             <Text style={{ fontSize: 15, fontWeight: '200' }}>{item.shelter_location}</Text>
                                                       
                                     </Left> 
-                                        {this.state.showAppyBtn && item.tags[0]["text"]==="#모집중" ?
+                                        { item.tags[0]["text"]==="#모집중" ?
                                             ( <Text style={{ fontSize: 15, fontWeight: '200' }}>{item.start_date} ~ {item.end_date} </Text>)  : null}
                                        
                                     

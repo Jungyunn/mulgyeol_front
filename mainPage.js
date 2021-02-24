@@ -71,6 +71,7 @@ export default class mainPage extends React.Component {
         super(props);
         this.state = {
             sido: 'key1',
+            sigu:0,
             visibleModal: null,
             image: null,
             selectedArray: [],
@@ -427,11 +428,16 @@ export default class mainPage extends React.Component {
             )
         })
     }
-
+    
     SearchTag = () => {
-        for (var i = 0; i < this.tag.itemsSelected.length; i++) {
-            searchtaglabel += '?tag='+this.tag.itemsSelected[i]["label"]+'&'
+        if(this.tag.itemsSelected.length==0){
+            searchtaglabel='?';
+        }else{
+            for (var i = 0; i < this.tag.itemsSelected.length; i++) {
+                searchtaglabel += '?tag='+this.tag.itemsSelected[i]["label"]+'&'
+            }
         }
+        
         if(this.state.sido=='key1') {location_sido='서울특별시'; location_sigu=seoul_gu[this.state.sigu]}
         else if(this.state.sido=='key2') {location_sido='경기도'; location_sigu=gyeong_gu[this.state.sigu]}
         else if(this.state.sido=='key3') {location_sido='경상남도'; location_sigu=gyeongnam_gu[this.state.sigu]}
@@ -439,9 +445,9 @@ export default class mainPage extends React.Component {
         if(location_sigu=="전체") {location_sigu=''; location=location_sido}
         else if(this.state.sido=='key4') {location=''}
         else {location='location='+location_sido+' '+location_sigu}
-       
         this.getSearchPost();
     }
+
 
 
 
@@ -751,7 +757,10 @@ export default class mainPage extends React.Component {
                                                     {this.state.showAppyBtn && item.tags[0]["text"]==="#모집중" ?
                                                         (<TouchableOpacity
                                                             style={styles.regiBtn}
-                                                            onPress={() => this.props.navigation.navigate("volunteerDate")}>
+                                                            onPress={() => {
+                                                                this.props.navigation.navigate("volunteerDate"),
+                                                                SyncStorage.set('SHELTERID', item.shelter);
+                                                                }}>
                                                             <Text>봉사신청</Text>
                                                         </TouchableOpacity>) : null}
                                                 

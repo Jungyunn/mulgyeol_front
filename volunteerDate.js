@@ -19,10 +19,10 @@ export default class volunteerDate extends Component {
     this.state = {
       jwt: null,
       shelter: "sample",
-      shelterNum: '1',
+      shelterNum: null,
       selectedDate: "",
-      start:"2021-02-23",
-      end:"2021-02-25",
+      start: "2021-02-23",
+      end: "2021-02-25",
     };
 
     //moment.locale('ko');
@@ -33,8 +33,9 @@ export default class volunteerDate extends Component {
   _retrieveData = async () => {
     try {
         const value = await AsyncStorage.getItem('TOKEN');
-        const shelterId = SyncStorage.get('SHELTERID')
-        //this.setState({ shelterNum: shelterId })
+        const shelterID = SyncStorage.get('SHELTERID')
+        //alert(shelterID + "!!")
+        this.setState({ shelterNum: shelterID })
 
         if (value != null) {
             this.setState({ jwt: value })
@@ -50,7 +51,6 @@ export default class volunteerDate extends Component {
 
   componentDidMount(){
     this._retrieveData();
-
   }
 
   onDateChange(date) {
@@ -75,6 +75,11 @@ export default class volunteerDate extends Component {
     .then((response) => {
       if(response.status == 200){
         console.log(response.data);
+        //console.log(response.data.length);
+        this.setState({
+          start: response.data[0].date,
+          end: response.data[(response.data.length) - 1].date
+        })
       }else {
         console.log("not 200");
       }

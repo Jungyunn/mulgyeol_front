@@ -262,7 +262,7 @@ export default class mainPage extends React.Component {
     }
 
     getSearchPost() {
-        axios(`http://3.34.119.63/volunteer/?tag=#모집중, `)
+        axios(`http://3.34.119.63/volunteer/${searchtaglabel}`)
             .then((response) => {
                 if (response.status == 200) {
                     this.setState({
@@ -417,7 +417,7 @@ export default class mainPage extends React.Component {
 
     SearchTag = () => {
         for (var i = 0; i < this.tag.itemsSelected.length; i++) {
-            searchtaglabel += this.tag.itemsSelected[i]["label"] + ", "
+            searchtaglabel += '?tag='+this.tag.itemsSelected[i]["label"]+'&'
         }
         alert(searchtaglabel)
         this.getSearchPost();

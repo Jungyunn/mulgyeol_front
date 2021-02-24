@@ -96,8 +96,8 @@ export default class aboutAgency extends Component {
             formData.append('chat_url', this.state.kakaoUrl)
         }
 
-        if (this.state.volnum !== this.state.sheldata.limit_of_volunteer) {
-            formData.append('limit_of_volunteer', this.state.volnum)
+        if (this.state.volnum !== this.state.sheldata.limit_number) {
+            formData.append('limit_number', this.state.volnum)
         }
 
         if (this.state.aboutAgencyText !== this.state.sheldata.content) {
@@ -232,7 +232,7 @@ export default class aboutAgency extends Component {
             .then((response) => {
                 if (response.status == 200) {
                     console.log("getShelterData 로그확인:", this.state.jwt);
-                    console.log(response.data.limit_of_volunteer);
+                    console.log(response.data.limit_number);
                     this.setState({ sheldata: response.data })
                     this.setState({
                         agencyName: this.state.sheldata.shelter_name, //보호소 이름
@@ -280,7 +280,7 @@ export default class aboutAgency extends Component {
     }
     _split() {
         var str1 = this.state.sheldata.loc_short.split(' ');
-        var limnum = this.state.sheldata.limit_of_volunteer;
+        var limnum = this.state.sheldata.limit_number;
         const local1 = str1[0];
         const local2 = str1[1];
 
@@ -290,7 +290,7 @@ export default class aboutAgency extends Component {
 
         this.setState({ sigu: local2 })
 
-        var n = this.state.sheldata.limit_of_volunteer;
+        var n = this.state.sheldata.limit_number;
 
         if (n == 7) this.setState({ volnum: "7" })
         else if (n == 8) this.setState({ volnum: "8" })
@@ -562,7 +562,7 @@ export default class aboutAgency extends Component {
                             <Text style={styles.textSytle}> {this.state.sheldata.chat_url}</Text>
 
                             <Text style={{ textAlign: 'center', fontWeight: "200" }}> [일일 봉사 인원 제한]</Text>
-                            <Text style={styles.textSytle}>{this.state.sheldata.limit_of_volunteer} </Text>
+                            <Text style={styles.textSytle}>{this.state.sheldata.limit_number} </Text>
 
                             <Text style={{ textAlign: 'center', fontWeight: "200" }}> [보호소 소개]</Text>
                             <Text style={styles.textSytle}> {this.state.sheldata.content}</Text>

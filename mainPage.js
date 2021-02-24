@@ -92,7 +92,10 @@ export default class mainPage extends React.Component {
 
             start_date: new Date(),
             end_date: new Date(),
-            max_date: new Date(currentDate.setMonth(currentDate.getMonth() + 1))
+            max_date: new Date(currentDate.setMonth(currentDate.getMonth() + 1)),
+
+            comp_startDate: null,
+            comp_endDate: null
         }
         this.t = setInterval(() => {
             this.setState({ count: this.state.count + 1 });
@@ -294,9 +297,13 @@ export default class mainPage extends React.Component {
                     this.setState({
                         comp_image: response.data.image,
                         comp_info: response.data.information,
+                        comp_startDate: response.data.start_date,
+                        comp_endDate: response.data.end_date,
 
                         image: response.data.image,
-                        volunteerText: response.data.information
+                        volunteerText: response.data.information,
+                        start_date: response.data.start_date,
+                        end_date: response.data.end_date
 
                     })
 
@@ -487,7 +494,12 @@ export default class mainPage extends React.Component {
         if (this.state.image !== this.state.comp_image) {
             formData.append('image', photo);
         }
-
+        if(this.state.start_date !== this.state.comp_startDate){
+            formData.append("start_date", this.state.start_date);
+        }
+        if(this.state.end_date !== this.state.comp_endDate){
+            formData.append("end_date", this.state.end_date)
+        }
         formData.append('tags', taglabel);
 
         var config = {
@@ -529,6 +541,8 @@ export default class mainPage extends React.Component {
 
         formdata.append("image", photo)
         formdata.append("information", this.state.volunteerText)
+        formdata.append("start_date", this.state.start_date)
+        formdata.append("end_date", this.state.end_date)
         formdata.append("tags", taglabel);
 
         fetch(url, {

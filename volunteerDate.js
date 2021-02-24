@@ -3,11 +3,13 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage
 } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment'
 import axios from 'axios';
+import SyncStorage from 'sync-storage';
 
 
 
@@ -15,15 +17,40 @@ export default class volunteerDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      jwt: null,
       shelter: "sample",
+      shelterNum: null,
       selectedDate: "",
-      start:"2021-02-23",
-      end:"2021-02-25",
+      start: "2021-02-23",
+      end: "2021-02-25",
     };
 
     //moment.locale('ko');
     this.onDateChange = this.onDateChange.bind(this);
 
+  }
+
+  _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('TOKEN');
+      const shelterID = SyncStorage.get('SHELTERID')
+      //alert(shelterID + "!!")
+      this.setState({ shelterNum: shelterID })
+
+      if (value != null) {
+        this.setState({ jwt: value })
+        this.getDateInfo();
+
+      } else {
+        console.log("token이 없습니다!")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+  componentDidMount() {
+    this._retrieveData();
   }
 
   onDateChange(date) {
@@ -34,32 +61,37 @@ export default class volunteerDate extends Component {
 
   }
 
-  getDateInfo(){
+  getDateInfo() {
     var config = {
       method: 'get',
-      url: 'http://3.34.119.63/volunteer/apply/',
+      url: `http://3.34.119.63/volunteer/apply/?shelter=${this.state.shelterNum}`,
       headers: {
+        Accept: "application/json",
         'Authorization': `jwt ${this.state.jwt}`
       }
     };
 
     axios(config)
-    .then((response) => {
-      if(response.status == 200){
-        console.log(response.data);
-        
-      }else {
-        console.log("not 200");
-      }
-      
-    })
-    .catch((error) => {
-      console.log(error)
-    });
+      .then((response) => {
+        if (response.status == 200) {
+          console.log(response.data);
+          //console.log(response.data.length);
+          this.setState({
+            start: response.data[0].date,
+            end: response.data[(response.data.length) - 1].date
+          })
+        } else {
+          console.log("not 200");
+        }
+
+      })
+      .catch((error) => {
+        console.log(error.response)
+      });
   }
 
-  applyVolunteer(){
-    let url = 'http://3.34.119.63/volunteer/apply/';
+  applyVolunteer() {
+    let url = `http://3.34.119.63/volunteer/apply/?shelter=${this.state.shelterNum}`;
     fetch(url, {
       method: 'POST',
       headers: {
@@ -68,20 +100,21 @@ export default class volunteerDate extends Component {
       },
       body: JSON.stringify({
         "shelter": this.state.shelter,
-        "date": this.state.selectedDate 
+        "date": this.state.selectedDate
       }),
       redirect: 'follow',
       credentials: 'same-origin'
 
     })
-    .then((response) => {
-      if(response.status == 201){
-        console.log(response.data);
-      } 
-    })
+      .then((response) => {
+        if (response.status == 201) {
+          console.log(response.data);
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   }
-
-
 
 
 
@@ -89,6 +122,9 @@ export default class volunteerDate extends Component {
     const { selectedDate } = this.state;
     //const registerDate = selectedDate ? (selectedDate.month() + 1 + '월' + ' ' + selectedDate.date() + '일') : '';
     const registerDate = selectedDate ? moment(this.state.selectedDate).format('YYYY-MM-DD') : '';
+    const minDate = moment(this.state.start).format('YYYY-MM-DD');
+    const maxDate = moment(this.state.end).format('YYYY-MM-DD');
+
     return (
       <View style={styles.backScreen}>
         <View>
@@ -106,18 +142,21 @@ export default class volunteerDate extends Component {
             selectMonthTitle={3}
             previousTitle="이전달"
             nextTitle="다음달" //특정 일 ex. 매달 25일 마다는 다음달로 넘어갈 수 있게
-            minDate={this.state.start}
-            maxDate={this.state.end}
+            minDate={minDate}
+            maxDate={maxDate}
           />
         </View>
         <View>
           <Text style={{ marginLeft: 28, paddingTop: 20, fontSize: 17, paddingBottom: 5 }}>선택한 날짜: {registerDate}</Text>
           <Text style={{ marginLeft: 28, paddingTop: 5, fontSize: 17, paddingBottom: 20 }}>신청한 인원: (제한 인원: 데베에서 가져오기) </Text>
           <TouchableOpacity style={styles.applyBtn}
-            onPress={() => alert(`${moment(this.state.selectedDate).format('YYYY-MM-DD')}`)}
-          /*onPress={()=>this.props.navigation.navigate(" ")}*/>
-            <Text style={styles.applyBtnText} 
-            onPress={()=> this.applyVolunteer()}/* 신청하기 누르면 날짜 신청인원 +1 */>신청하기</Text>
+            onPress={() =>
+              //alert(`${moment(this.state.selectedDate).format('YYYY-MM-DD')}`)
+              alert(minDate)
+            }
+              /*onPress={()=>this.props.navigation.navigate(" ")}*/>
+            <Text style={styles.applyBtnText}
+              onPress={() => this.applyVolunteer()}/* 신청하기 누르면 날짜 신청인원 +1 */>신청하기</Text>
           </TouchableOpacity>
         </View>
 
@@ -140,10 +179,10 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
 
-  period:{
+  period: {
     textAlign: "center",
     fontSize: 18,
-    marginTop:10
+    marginTop: 10
   },
 
   applyBtn: {

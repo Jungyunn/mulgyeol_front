@@ -20,9 +20,10 @@ export default class volunteerDate extends Component {
       shelter: "sample",
       shelterNum: null,
       selectedDate: "",
-
       start: "",
       end: "",
+
+      currentNum: 88,
     };
 
     //moment.locale('ko');
@@ -114,10 +115,13 @@ export default class volunteerDate extends Component {
     };
     axios(config)
       .then((response) => {
-        console.log(response)
+        if(response.status == 201){
+          alert("신청이 완료되었습니다.")
+        }
       })
       .catch((error) => {
         console.log(error.response)
+        alert("신청할 수 없습니다.\n" + "[사유]" + error.response.data.message );
       });
   }
 
@@ -151,10 +155,11 @@ export default class volunteerDate extends Component {
         </View>
         <View>
           <Text style={{ marginLeft: 28, paddingTop: 20, fontSize: 17, paddingBottom: 5 }}>선택한 날짜: {registerDate}</Text>
-          <Text style={{ marginLeft: 28, paddingTop: 5, fontSize: 17, paddingBottom: 20 }}>신청한 인원: (제한 인원: 데베에서 가져오기) </Text>
+          <Text style={{ marginLeft: 28, paddingTop: 5, fontSize: 17, paddingBottom: 20 }}>신청한 인원: {this.state.currentNum} </Text>
           <TouchableOpacity style={styles.applyBtn}
             onPress={() => {
               this.applyVolunteer()
+              this.props.navigation.navigate("mainPage")
             }}
             /*onPress={()=>this.props.navigation.navigate(" ")}*/>
             <Text style={styles.applyBtnText}

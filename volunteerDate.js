@@ -40,7 +40,7 @@ export default class volunteerDate extends Component {
       if (value != null) {
         this.setState({ jwt: value })
         this.getDateInfo();
-        console.log("jwt token is not null");
+        //console.log("jwt token is not null");
 
       } else {
         console.log("token이 없습니다!")

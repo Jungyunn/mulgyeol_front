@@ -3,11 +3,13 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage
 } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment'
 import axios from 'axios';
+import SyncStorage from 'sync-storage';
 
 
 
@@ -15,7 +17,9 @@ export default class volunteerDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      jwt: null,
       shelter: "sample",
+      shelterNum: '1',
       selectedDate: "",
       start:"2021-02-23",
       end:"2021-02-25",
@@ -23,6 +27,29 @@ export default class volunteerDate extends Component {
 
     //moment.locale('ko');
     this.onDateChange = this.onDateChange.bind(this);
+
+  }
+
+  _retrieveData = async () => {
+    try {
+        const value = await AsyncStorage.getItem('TOKEN');
+        const shelterId = SyncStorage.get('SHELTERID')
+        //this.setState({ shelterNum: shelterId })
+
+        if (value != null) {
+            this.setState({ jwt: value })
+            this.getDateInfo();
+
+        } else {
+            console.log("token이 없습니다!")
+        }
+    } catch (error) {
+        console.log(error)
+    }
+};
+
+  componentDidMount(){
+    this._retrieveData();
 
   }
 
@@ -37,8 +64,9 @@ export default class volunteerDate extends Component {
   getDateInfo(){
     var config = {
       method: 'get',
-      url: 'http://3.34.119.63/volunteer/apply/',
+      url: `http://3.34.119.63/volunteer/apply/?shelter=${this.state.shelterNum}`,
       headers: {
+        Accept: "application/json",
         'Authorization': `jwt ${this.state.jwt}`
       }
     };
@@ -53,12 +81,12 @@ export default class volunteerDate extends Component {
       
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error.response)
     });
   }
 
   applyVolunteer(){
-    let url = 'http://3.34.119.63/volunteer/apply/';
+    let url = `http://3.34.119.63/volunteer/apply/?shelter=${this.state.shelterNum}`;
     fetch(url, {
       method: 'POST',
       headers: {
@@ -78,6 +106,9 @@ export default class volunteerDate extends Component {
         console.log(response.data);
       } 
     })
+    .catch((e) => {
+      console.log(e);
+  });
   }
 
 

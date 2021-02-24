@@ -262,7 +262,7 @@ export default class mainPage extends React.Component {
     }
 
     getSearchPost() {
-        axios(`http://3.34.119.63/volunteer/?tags=${searchtaglabel}`)
+        axios(`http://3.34.119.63/volunteer/?tag=#모집중, `)
             .then((response) => {
                 if (response.status == 200) {
                     this.setState({

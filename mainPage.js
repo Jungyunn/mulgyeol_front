@@ -272,17 +272,19 @@ export default class mainPage extends React.Component {
 
     getSearchPost() {
         //axios(`http://3.34.119.63/volunteer/?tag=#모집종료&location=경기도 고양시`)
-
-        axios(`http://3.34.119.63/volunteer/${searchtaglabel}${location}`)
+        let url = `http://3.34.119.63/volunteer/${searchtaglabel}${location}`
+        axios(url)
             .then((response) => {
                 if (response.status == 200) {
+                    console.log(response.data)
+                    console.log(url);
                     this.setState({
                         posts: response.data
                     })
                 }
             })
             .catch((error) => {
-                alert(error);
+                console.log(error.response);
             });
         searchtaglabel = '';
     }
@@ -434,8 +436,7 @@ export default class mainPage extends React.Component {
         if(this.state.sido=='key1') {location_sido='서울특별시'; location_sigu=seoul_gu[this.state.sigu]}
         else if(this.state.sido=='key2') {location_sido='경기도'; location_sigu=gyeong_gu[this.state.sigu]}
         else if(this.state.sido=='key3') {location_sido='경상남도'; location_sigu=gyeongnam_gu[this.state.sigu]}
-
-        if(location_sigu=="전체") {location='loaction'+location_sido}
+        if(location_sigu=="전체") {location='location='+location_sido}
         else if(this.state.sido=='key4') {location=''}
         else {location='location='+location_sido+' '+location_sigu}
 
@@ -446,10 +447,7 @@ export default class mainPage extends React.Component {
             for (var i = 0; i < this.tag.itemsSelected.length; i++) {
                 searchtaglabel += '?tag='+this.tag.itemsSelected[i]["label"]+'&'
             }
-        }
-        
-       
-        
+        }        
         
         //alert(location)
         this.getSearchPost();
@@ -522,12 +520,9 @@ export default class mainPage extends React.Component {
         if (this.state.image !== this.state.comp_image) {
             formData.append('image', photo);
         }
-        if(this.state.start_date !== this.state.comp_startDate){
-            formData.append("start_date", this.state.start_date);
-        }
-        if(this.state.end_date !== this.state.comp_endDate){
-            formData.append("end_date", this.state.end_date)
-        }
+
+        formData.append("start_date", this.state.start_date);        
+        formData.append("end_date", this.state.end_date);  
         formData.append('tags', taglabel);
 
         var config = {
@@ -550,8 +545,7 @@ export default class mainPage extends React.Component {
                 }
             })
             .catch((error) => {
-                alert("tq" + error);
-                console.log("shelterForm error:" + error)
+                console.log(error.response)
             });
         taglabel = '';
 

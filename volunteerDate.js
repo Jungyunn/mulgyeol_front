@@ -11,7 +11,6 @@ import moment from 'moment'
 import axios from 'axios';
 import SyncStorage from 'sync-storage';
 
-var start_date, end_date;
 var minDate, maxDate;
 export default class volunteerDate extends Component {
   constructor(props) {
@@ -21,8 +20,9 @@ export default class volunteerDate extends Component {
       shelter: "sample",
       shelterNum: null,
       selectedDate: "",
-      start:"",
-      end:"",
+
+      start: "",
+      end: "",
     };
 
     //moment.locale('ko');
@@ -40,6 +40,7 @@ export default class volunteerDate extends Component {
       if (value != null) {
         this.setState({ jwt: value })
         this.getDateInfo();
+        console.log("jwt token is not null");
 
       } else {
         console.log("token이 없습니다!")
@@ -56,7 +57,6 @@ export default class volunteerDate extends Component {
   onDateChange(date) {
     this.setState({
       selectedDate: date,
-
     });
 
   }
@@ -77,14 +77,17 @@ export default class volunteerDate extends Component {
           console.log(response.data);
           //console.log(response.data.length);
           var i = response.data.length;
-          
+
           this.setState({
             start: response.data[0].date,
-            end: response.data[i-1].date,
+            end: response.data[i - 1].date,
           })
-          minDate = moment(this.state.start).format('YYYY-MM-DD');
-          maxDate = moment(this.state.end).format('YYYY-MM-DD');
-     
+
+          //minDate = moment(this.state.start).format('YYYY-MM-DD');
+          //maxDate = moment(this.state.end).format('YYYY-MM-DD');
+          minDate = this.state.start;
+          maxDate = this.state.end;
+
         } else {
           console.log("not 200");
         }
@@ -96,28 +99,25 @@ export default class volunteerDate extends Component {
   }
 
   applyVolunteer() {
-    let url = `http://3.34.119.63/volunteer/apply/?shelter=${this.state.shelterNum}`;
-    fetch(url, {
-      method: 'POST',
+    var config = {
+      method: 'post',
+      url: 'http://3.34.119.63/volunteer/apply/',
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
+        Accept: "application/json",
+        'Content-Type': "application/json",
+        'Authorization': `jwt ${this.state.jwt}`
       },
-      body: JSON.stringify({
-        "shelter": this.state.shelter,
-        "date": this.state.selectedDate
-      }),
-      redirect: 'follow',
-      credentials: 'same-origin'
-
-    })
+      data: {
+        "shelter": this.state.shelterNum,
+        "date": moment(this.state.selectedDate).format('YYYY-MM-DD')
+      },
+    };
+    axios(config)
       .then((response) => {
-        if (response.status == 201) {
-          console.log(response.data);
-        }
+        console.log(response)
       })
-      .catch((e) => {
-        console.log(e);
+      .catch((error) => {
+        console.log(error.response)
       });
   }
 
@@ -127,16 +127,13 @@ export default class volunteerDate extends Component {
     const { selectedDate } = this.state;
     //const registerDate = selectedDate ? (selectedDate.month() + 1 + '월' + ' ' + selectedDate.date() + '일') : '';
     const registerDate = selectedDate ? moment(this.state.selectedDate).format('YYYY-MM-DD') : '';
-   
-   
-  
 
     return (
       <View style={styles.backScreen}>
         <View>
           <Text style={styles.title}> 봉사날짜 선택 </Text>
         </View>
-        <Text style={styles.period}>모집 기간: {minDate} ~ {maxDate}</Text>
+        <Text style={styles.period}>모집 기간: {this.state.start} ~ {this.state.end}</Text>
         <View style={{ marginTop: 30 }}>
           <CalendarPicker
             minDate={Date()}
@@ -156,13 +153,12 @@ export default class volunteerDate extends Component {
           <Text style={{ marginLeft: 28, paddingTop: 20, fontSize: 17, paddingBottom: 5 }}>선택한 날짜: {registerDate}</Text>
           <Text style={{ marginLeft: 28, paddingTop: 5, fontSize: 17, paddingBottom: 20 }}>신청한 인원: (제한 인원: 데베에서 가져오기) </Text>
           <TouchableOpacity style={styles.applyBtn}
-            onPress={() =>
-              //alert(`${moment(this.state.selectedDate).format('YYYY-MM-DD')}`)
-              alert(minDate)
-            }
-              /*onPress={()=>this.props.navigation.navigate(" ")}*/>
+            onPress={() => {
+              this.applyVolunteer()
+            }}
+            /*onPress={()=>this.props.navigation.navigate(" ")}*/>
             <Text style={styles.applyBtnText}
-              onPress={() => this.applyVolunteer()}/* 신청하기 누르면 날짜 신청인원 +1 */>신청하기</Text>
+              /* 신청하기 누르면 날짜 신청인원 +1 */>신청하기</Text>
           </TouchableOpacity>
         </View>
 

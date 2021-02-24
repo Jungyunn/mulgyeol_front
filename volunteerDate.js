@@ -11,8 +11,8 @@ import moment from 'moment'
 import axios from 'axios';
 import SyncStorage from 'sync-storage';
 
-
-
+var start_date, end_date;
+var minDate, maxDate;
 export default class volunteerDate extends Component {
   constructor(props) {
     super(props);
@@ -21,8 +21,8 @@ export default class volunteerDate extends Component {
       shelter: "sample",
       shelterNum: null,
       selectedDate: "",
-      start: "2021-02-23",
-      end: "2021-02-25",
+      start:"",
+      end:"",
     };
 
     //moment.locale('ko');
@@ -76,10 +76,15 @@ export default class volunteerDate extends Component {
         if (response.status == 200) {
           console.log(response.data);
           //console.log(response.data.length);
+          var i = response.data.length;
+          
           this.setState({
             start: response.data[0].date,
-            end: response.data[(response.data.length) - 1].date
+            end: response.data[i-1].date,
           })
+          minDate = moment(this.state.start).format('YYYY-MM-DD');
+          maxDate = moment(this.state.end).format('YYYY-MM-DD');
+     
         } else {
           console.log("not 200");
         }
@@ -122,15 +127,16 @@ export default class volunteerDate extends Component {
     const { selectedDate } = this.state;
     //const registerDate = selectedDate ? (selectedDate.month() + 1 + '월' + ' ' + selectedDate.date() + '일') : '';
     const registerDate = selectedDate ? moment(this.state.selectedDate).format('YYYY-MM-DD') : '';
-    const minDate = moment(this.state.start).format('YYYY-MM-DD');
-    const maxDate = moment(this.state.end).format('YYYY-MM-DD');
+   
+   
+  
 
     return (
       <View style={styles.backScreen}>
         <View>
           <Text style={styles.title}> 봉사날짜 선택 </Text>
         </View>
-        <Text style={styles.period}>모집 기간: {this.state.start} ~ {this.state.end}</Text>
+        <Text style={styles.period}>모집 기간: {minDate} ~ {maxDate}</Text>
         <View style={{ marginTop: 30 }}>
           <CalendarPicker
             minDate={Date()}

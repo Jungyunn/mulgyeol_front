@@ -3,13 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
-  AsyncStorage
+  TouchableOpacity
 } from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment'
 import axios from 'axios';
-import SyncStorage from 'sync-storage';
 
 
 
@@ -17,40 +15,15 @@ export default class volunteerDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      jwt: null,
       shelter: "sample",
-      shelterNum: null,
       selectedDate: "",
-      start: "2021-02-23",
-      end: "2021-02-25",
+      start:"2021-02-23",
+      end:"2021-02-25",
     };
 
     //moment.locale('ko');
     this.onDateChange = this.onDateChange.bind(this);
 
-  }
-
-  _retrieveData = async () => {
-    try {
-        const value = await AsyncStorage.getItem('TOKEN');
-        const shelterID = SyncStorage.get('SHELTERID')
-        //alert(shelterID + "!!")
-        this.setState({ shelterNum: shelterID })
-
-        if (value != null) {
-            this.setState({ jwt: value })
-            this.getDateInfo();
-
-        } else {
-            console.log("token이 없습니다!")
-        }
-    } catch (error) {
-        console.log(error)
-    }
-};
-
-  componentDidMount(){
-    this._retrieveData();
   }
 
   onDateChange(date) {
@@ -64,9 +37,8 @@ export default class volunteerDate extends Component {
   getDateInfo(){
     var config = {
       method: 'get',
-      url: `http://3.34.119.63/volunteer/apply/?shelter=${this.state.shelterNum}`,
+      url: 'http://3.34.119.63/volunteer/apply/',
       headers: {
-        Accept: "application/json",
         'Authorization': `jwt ${this.state.jwt}`
       }
     };
@@ -75,23 +47,19 @@ export default class volunteerDate extends Component {
     .then((response) => {
       if(response.status == 200){
         console.log(response.data);
-        //console.log(response.data.length);
-        this.setState({
-          start: response.data[0].date,
-          end: response.data[(response.data.length) - 1].date
-        })
+        
       }else {
         console.log("not 200");
       }
       
     })
     .catch((error) => {
-      console.log(error.response)
+      console.log(error)
     });
   }
 
   applyVolunteer(){
-    let url = `http://3.34.119.63/volunteer/apply/?shelter=${this.state.shelterNum}`;
+    let url = 'http://3.34.119.63/volunteer/apply/';
     fetch(url, {
       method: 'POST',
       headers: {
@@ -111,9 +79,6 @@ export default class volunteerDate extends Component {
         console.log(response.data);
       } 
     })
-    .catch((e) => {
-      console.log(e);
-  });
   }
 
 

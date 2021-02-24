@@ -271,9 +271,9 @@ export default class mainPage extends React.Component {
     }
 
     getSearchPost() {
-        //axios(`http://3.34.119.63/volunteer/?tag=#모집중&location=경기도`)
+        //axios(`http://3.34.119.63/volunteer/?tag=#모집종료&location=경기도 고양시`)
 
-        axios(`http://3.34.119.63/volunteer/${searchtaglabel}location=${location}`)
+        axios(`http://3.34.119.63/volunteer/${searchtaglabel}${location}`)
             .then((response) => {
                 if (response.status == 200) {
                     this.setState({
@@ -430,7 +430,17 @@ export default class mainPage extends React.Component {
     }
     
     SearchTag = () => {
-        if(this.tag.itemsSelected.length==0){
+
+        if(this.state.sido=='key1') {location_sido='서울특별시'; location_sigu=seoul_gu[this.state.sigu]}
+        else if(this.state.sido=='key2') {location_sido='경기도'; location_sigu=gyeong_gu[this.state.sigu]}
+        else if(this.state.sido=='key3') {location_sido='경상남도'; location_sigu=gyeongnam_gu[this.state.sigu]}
+
+        if(location_sigu=="전체") {location='loaction'+location_sido}
+        else if(this.state.sido=='key4') {location=''}
+        else {location='location='+location_sido+' '+location_sigu}
+
+        if(this.tag.itemsSelected.length==0)
+        {  
             searchtaglabel='?';
         }else{
             for (var i = 0; i < this.tag.itemsSelected.length; i++) {
@@ -438,13 +448,10 @@ export default class mainPage extends React.Component {
             }
         }
         
-        if(this.state.sido=='key1') {location_sido='서울특별시'; location_sigu=seoul_gu[this.state.sigu]}
-        else if(this.state.sido=='key2') {location_sido='경기도'; location_sigu=gyeong_gu[this.state.sigu]}
-        else if(this.state.sido=='key3') {location_sido='경상남도'; location_sigu=gyeongnam_gu[this.state.sigu]}
+       
         
-        if(location_sigu=="전체") {location_sigu=''; location=location_sido}
-        else if(this.state.sido=='key4') {location=''}
-        else {location='location='+location_sido+' '+location_sigu}
+        
+        //alert(location)
         this.getSearchPost();
     }
 
@@ -1097,7 +1104,7 @@ const styles = StyleSheet.create({
     },
 
     tag_shape: {
-        width: 80,
+        width: screenWidth/4.95,
         height: 34,
         marginLeft: 5,
         backgroundColor: '#E9ECEF',

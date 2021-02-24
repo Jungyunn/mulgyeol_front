@@ -16,7 +16,7 @@ export default class myVolunteer extends Component {
         super(props);
         this.state = {
             jwt: null,
-            chatURL: 'default',
+            //chatURL: 'default',
             volunData: [],
         }
     }
@@ -54,9 +54,9 @@ export default class myVolunteer extends Component {
             .then((response) => {
                 if (response.status == 200) {
                     console.log(response.data);
-                    console.log(response.data[1].shelter_chat_url);
+                    //console.log(response.data[1].shelter_chat_url);
                     this.setState({ 
-                        volunData: response.data, chatURL: response.data[1].shelter_chat_url})
+                        volunData: response.data })
                 }
                 else {
                     console.log("NOT 200");

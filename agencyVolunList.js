@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Linking, View, StyleSheet, ScrollView, Text, TouchableOpacity, 
+import { Button, Linking, View, StyleSheet, Dimensions, ScrollView, Text, TouchableOpacity, 
     Image, AsyncStorage, BackHandler } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -180,11 +180,11 @@ export default class agencyVolunList extends Component {
                                     data={this.state.posts}
                                     renderItem={({ item }) => (
                                         <View>
-                                            <Text style={styles.dateText}>{item.date} (신청 인원:{item.current_number})</Text>
+                                            <Text style={styles.dateText}>{item.date}       (신청 인원:{item.current_number})</Text>
                                             {item.applicant.map((value,index) => {
                                                 return <Text key = {index} style={styles.agencyText}>봉사자 {index+1}. {value.slice(4,)}</Text>
                                             })}
-                                            
+                                            <Text> </Text>
                                         </View>  
                                         
                                         
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlign: 'center',
         justifyContent: 'center',
-        marginLeft: 40
+        
     },
     cancelBtn: {
         backgroundColor: '#7599FF',
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
         paddingTop: 30,
         paddingBottom: 0,
         alignContent: 'center',
-
+        paddingLeft:Math.round(Dimensions.get('window').width)/6,
         //marginTop: 3,
         //width: screenWidth / 2 - 30,
         //marginRight: 20      
@@ -278,11 +278,14 @@ const styles = StyleSheet.create({
 
     agencyText: {
         fontSize:16,
-
+        paddingLeft:Math.round(Dimensions.get('window').width)/10,
     },
 
     dateText: {
         fontSize:18,
+        backgroundColor:'#D3E1F8',
+        paddingLeft:Math.round(Dimensions.get('window').width)/20,
+        alignSelf: 'flex-start'
     },
   
     URLbox: {

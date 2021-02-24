@@ -23,6 +23,7 @@ export default class volunteerDate extends Component {
       start: "",
       end: "",
 
+      volunDateText: [],
       currentNum: 88,
     };
 
@@ -60,12 +61,6 @@ export default class volunteerDate extends Component {
     this._retrieveData();
   }
 
-  onDateChange(date) {
-    this.setState({
-      selectedDate: date,
-    });
-
-  }
 
   getDateInfo() {
     var config = {
@@ -85,6 +80,7 @@ export default class volunteerDate extends Component {
           var i = response.data.length;
 
           this.setState({
+            volunDateText: response.data,
             start: response.data[0].date,
             end: response.data[i - 1].date,
           })
@@ -99,6 +95,21 @@ export default class volunteerDate extends Component {
         console.log(error.response)
       });
   }
+
+  onDateChange(date) {
+    this.setState({
+      selectedDate: date,
+    });
+  }
+
+  getCurrentNum(date){
+    for(var i = 0; i < this.state.volunDateText.length; i++){
+      if (date == this.state.volunDateText[i].date){
+        return(this.state.volunDateText[i].current_number)
+      }
+    }
+  }
+
 
   applyVolunteer() {
     var config = {
@@ -156,7 +167,7 @@ export default class volunteerDate extends Component {
         </View>
         <View>
           <Text style={{ marginLeft: 28, paddingTop: 20, fontSize: 17, paddingBottom: 5 }}>선택한 날짜: {registerDate}</Text>
-          <Text style={{ marginLeft: 28, paddingTop: 5, fontSize: 17, paddingBottom: 20 }}>신청한 인원: {this.state.currentNum} </Text>
+          <Text style={{ marginLeft: 28, paddingTop: 5, fontSize: 17, paddingBottom: 20 }}>신청한 인원: {this.getCurrentNum(registerDate)} </Text>
           <TouchableOpacity style={styles.applyBtn}
             onPress={() => {
               this.applyVolunteer()

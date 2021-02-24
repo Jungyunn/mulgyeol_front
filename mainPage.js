@@ -761,6 +761,9 @@ export default class mainPage extends React.Component {
                                                             onPress={() => {
                                                                 this.props.navigation.navigate("volunteerDate"),
                                                                 SyncStorage.set('SHELTERID', item.shelter);
+                                                                SyncStorage.set('START', item.start_date);
+                                                                SyncStorage.set('END', item.end_date);
+                                                                
                                                                 }}>
                                                             <Text>봉사신청</Text>
                                                         </TouchableOpacity>) : null}

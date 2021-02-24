@@ -31,6 +31,11 @@ export default class volunteerDate extends Component {
 
   }
 
+  static getDerivedStateFromProps(){
+    minDate=SyncStorage.get('START');
+    maxDate=SyncStorage.get('END');
+  }
+
   _retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('TOKEN');
@@ -84,10 +89,6 @@ export default class volunteerDate extends Component {
             end: response.data[i - 1].date,
           })
 
-          //minDate = moment(this.state.start).format('YYYY-MM-DD');
-          //maxDate = moment(this.state.end).format('YYYY-MM-DD');
-          minDate = this.state.start;
-          maxDate = this.state.end;
 
         } else {
           console.log("not 200");

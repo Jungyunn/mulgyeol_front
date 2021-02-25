@@ -19,7 +19,7 @@ import { ThemeColors } from 'react-navigation';
 import { FlatList } from 'react-native-gesture-handler';
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
-
+var THUM;
 
 export default class Community extends Component {
     constructor(props) {
@@ -71,13 +71,18 @@ export default class Community extends Component {
         Keyboard.dismiss()
     }
 
+    // static getDerivedStateFromProps(){
+    //      THUM = SyncStorage.get('THUMBNAIL');
+    //     alert(THUM)
+        
+    // }
     _retrieveData = async () => {
         try {
             const value = await AsyncStorage.getItem('TOKEN');
             const shelterID = SyncStorage.get('SHELTERID');
             const thumbnail = SyncStorage.get('THUMBNAIL');
             this.setState({ shelterNum: shelterID, thumbnail:thumbnail });
-
+            
             if (value != null) {
                 // We have data!!
                 //console.log(value);
@@ -235,20 +240,22 @@ export default class Community extends Component {
             body: formdata,
 
         }).then((response) => {
-            if (response.status == 200) {
-                alert(response.data.message)
-               
+            if (response.status == 201) {
+                
+                this.getCommunity();
+                
             }
             else  {
                 //alert(response.data.message)
                 //alert(response.status + "^^")
                 console.log(response.status)
             }
-
+            alert(response.status)
         }).catch((e) => {
             //alert(e)
             console.log(e);
         })
+
       
     }
 
@@ -287,6 +294,7 @@ export default class Community extends Component {
             .then((response) => {
                 if (response.status == 200) {
                     alert(response.status)
+                    this.getCommunity();
                 }
                 else {
                     alert(response.status)
@@ -340,6 +348,7 @@ export default class Community extends Component {
         axios(config)
             .then((response) => {
                 console.log(response)
+                this.getCommunity();
             })
             //.then(response=> console.log(response.data))
 
@@ -370,7 +379,7 @@ export default class Community extends Component {
                         <Card style={styles.cardStyle}>
                             <CardItem>
                                 <Left>
-                                    <Thumbnail source={{uri:'https://mulgyeol-static-storage.s3.ap-northeast-2.amazonaws.com/' + this.state.thumbnail}} />
+                                    <Thumbnail source={{uri:`https://mulgyeol-static-storage.s3.ap-northeast-2.amazonaws.com/${this.state.thumbnail}` }} />
                                     <Body>
                                         <View flexDirection="row">
                                             <Text style={{ fontWeight: '900', fontSize: 17, fontWeight: "bold" }}>{item.shelter_name}</Text>

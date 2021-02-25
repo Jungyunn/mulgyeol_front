@@ -25,7 +25,7 @@ import axios from 'axios'
 import jwt_decode from 'jwt-decode';
 import SyncStorage from 'sync-storage';
 import { KeyboardAvoidingScrollView } from 'react-native-keyboard-avoiding-scroll-view';
-import DatePicker from 'react-native-datepicker'
+import DatePicker from 'react-native-datepicker';
 
 
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -242,6 +242,7 @@ export default class mainPage extends React.Component {
                         info_name: response.data.shelter_name,
                         info_location: response.data.loc_short,
                         info_animal: response.data.status,
+                        
                     })
                 }
             })
@@ -539,6 +540,7 @@ export default class mainPage extends React.Component {
             .then((response) => {
                 if (response.status == 200) {
                     alert(response.status)
+                    this.getVolunPost();
                 }
                 else {
                     alert(response.status)
@@ -577,8 +579,8 @@ export default class mainPage extends React.Component {
             body: formdata,
         }).then((response) => {
             if (response.status == 200) {
-
-                alert(response.status)
+                this.getVolunPost();
+                //alert(response.status)
                 //alert(response.data.message)
 
             }
@@ -717,7 +719,6 @@ export default class mainPage extends React.Component {
                     </View>
 
 
-
                     <FlatList
                         keyExtractor={item => item.id}
 
@@ -728,8 +729,9 @@ export default class mainPage extends React.Component {
                                 <TouchableOpacity onPress={() => {
                                     this.setState({ shelterId: item.shelter })
                                     SyncStorage.set('SHELTERID', item.shelter);
-                                    SyncStorage.set('THUMBNAIL', item.shelter_thumbnail);
+                                   
                                     this.props.navigation.navigate('aboutAgency')
+                                    alert(item.shelter_thumbnail)
 
                                 }}>
 

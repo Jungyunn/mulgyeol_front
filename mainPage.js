@@ -539,11 +539,11 @@ export default class mainPage extends React.Component {
         axios(config)
             .then((response) => {
                 if (response.status == 200) {
-                    alert(response.status)
+                    //alert(response.status)
                     this.getVolunPost();
                 }
                 else {
-                    alert(response.status)
+                    //alert(response.status)
                 }
             })
             .catch((error) => {
@@ -579,16 +579,19 @@ export default class mainPage extends React.Component {
             body: formdata,
         }).then((response) => {
             if (response.status == 200) {
-                this.getVolunPost();
+               
                 //alert(response.status)
                 //alert(response.data.message)
+               
 
             }
             else if (response.status == 400) {
-                alert(response.data.message)
-                alert(response.status)
+                //alert(response.data.message)
+                //alert(response.status)
             }
-            alert(response.status)
+            alert("봉사 모집 공고를 올렸습니다.")
+            this.getVolunPost();
+
         }).catch((e) => {
             console.log(e);
         });
@@ -729,9 +732,9 @@ export default class mainPage extends React.Component {
                                 <TouchableOpacity onPress={() => {
                                     this.setState({ shelterId: item.shelter })
                                     SyncStorage.set('SHELTERID', item.shelter);
-                                   
+                                    SyncStorage.set('THUMBNAIL', item.shelter_thumbnail);
                                     this.props.navigation.navigate('aboutAgency')
-                                    alert(item.shelter_thumbnail)
+                                   
 
                                 }}>
 
@@ -918,7 +921,7 @@ export default class mainPage extends React.Component {
                                 placeholder="봉사 모집 소개를 간략히 적어주세요!"
                                 placeholderTextColor="#3A4C7F"
                                 height={85}
-                                maxLength={75}
+                                maxLength={200}
                                 style={{ textAlign: "center", padding: 10, marginBottom:10 }}
                                 onChangeText={(volunteerText => this.setState({ volunteerText }))}
                                 value={this.state.volunteerText}>

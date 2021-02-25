@@ -250,7 +250,7 @@ export default class Community extends Component {
                 //alert(response.status + "^^")
                 console.log(response.status)
             }
-            alert(response.status)
+            //alert(response.status)
         }).catch((e) => {
             //alert(e)
             console.log(e);
@@ -293,7 +293,7 @@ export default class Community extends Component {
         axios(config)
             .then((response) => {
                 if (response.status == 200) {
-                    alert(response.status)
+                    //alert(response.status)
                     this.getCommunity();
                 }
                 else {

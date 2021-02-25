@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 
-import { Button, Linking, View, StyleSheet, ScrollView, Text,  Dimensions, TouchableOpacity, AsyncStorage } from 'react-native';
+import { Button,Image, Linking, View, StyleSheet, ScrollView, Text,  Dimensions, TouchableOpacity, AsyncStorage } from 'react-native';
 import Constants from 'expo-constants';
 import axios from 'axios'
 import { StackActions, NavigationActions, SwitchActions } from 'react-navigation';
 import { Card, CardItem, Thumbnail, Body, Left, Right } from 'native-base'
 import { FlatList } from 'react-native-gesture-handler';
+
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -99,10 +100,13 @@ export default class myVolunteer extends Component {
         }))*/
     }
 
+   
+
     componentDidMount() {
         this._retrieveData();
     }
-
+ 
+   
     _handleOpenWithLinking = (link) => {
         Linking.openURL(link);
         //console.log(this.state.chatURL + " !!")
@@ -113,9 +117,15 @@ export default class myVolunteer extends Component {
         return (
             <View style={styles.backScreen}>
 
-                <View>
+                <View flexDirection="row">
+                    <TouchableOpacity onPress={this.getMyVolunList()}>
+                        <Thumbnail source={require('./assets/logo2.png')} style={{width:screenWidth/4,  marginLeft:screenWidth/7}}/>
+                    </TouchableOpacity>
+                   
                     <Text style={styles.title}> 나의 봉사 내역 </Text>
-                    </View>
+                 
+             
+                </View>
                     <ScrollView>
                         <View style={styles.list}>
                     <FlatList

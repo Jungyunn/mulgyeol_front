@@ -203,7 +203,7 @@ export default class aboutAgency extends Component {
         try {
             const value = await AsyncStorage.getItem('TOKEN');
             const shelterID = SyncStorage.get('SHELTERID')
-            SyncStorage.set('THUMBNAIL');
+            
             this.setState({ shelterNum: shelterID })
 
             if (value != null) {
@@ -248,7 +248,8 @@ export default class aboutAgency extends Component {
                         image: this.state.sheldata.thumbnail,
                     })
                     this._userRole();
-                    SyncStorage.set('THUMBNAIL');
+                  
+                   
                 }
                 else {
                     console.log("로그인되지 않음");

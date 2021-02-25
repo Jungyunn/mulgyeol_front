@@ -105,41 +105,22 @@ export default class agencyVolunList extends Component {
         }
     };
 
-    _pickImage = async () => {
-        try {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                cropperCircleOverlay: true,
-                aspect: [1, 1],
-                quality: 1,
-            });
-            if (!result.cancelled) {
-                this.setState({ image: result.uri });
-            }
-
-            console.log(result);
-        } catch (E) {
-            console.log(E);
-        }
-    }
-
     _imageLoad = () => {
         let { image } = this.state;
         if (image != null) {
             return (
-                <TouchableOpacity style={{ width: 100, height: 100, borderWidth: 0.3, borderRadius: 63 }} onPress={this._pickImage}>
+                <View style={{ width: 100, height: 100, borderWidth: 0.3, borderRadius: 63 }}>
                     {image && <Image source={{ uri: image }}
                         style={{ width: 100, height: 100, borderRadius: 63, resizeMode: "cover" }} />}
-                </TouchableOpacity>
+                </View>
 
             )
         }
         else {
             return (
-                <TouchableOpacity style={{ width: 100, height: 100, borderWidth: 0.3, borderRadius: 63, justifyContent: "center", alignItems: "center" }} onPress={this._pickImage}>
-                    <Ionicons style={[{ color: "#000", paddingTop: 10, }]} size={50} name={'ios-images'} onPress={this._pickImage} />
-                </TouchableOpacity>
+                <View style={{ width: 100, height: 100, borderWidth: 0.3, borderRadius: 63, justifyContent: "center", alignItems: "center" }}>
+                    <Ionicons style={[{ color: "#000", paddingTop: 10, }]} size={50} name={'ios-images'} />
+                </View>
             )
         }
     }

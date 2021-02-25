@@ -8,6 +8,7 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios'
+import {Left, Right} from 'native-base'
 import { FlatList } from 'react-native-gesture-handler';
 
 export default class agencyVolunList extends Component {
@@ -179,12 +180,28 @@ export default class agencyVolunList extends Component {
                                     keyExtractor={item => item.id}
                                     data={this.state.posts}
                                     renderItem={({ item }) => (
-                                        <View>
-                                            <Text style={styles.dateText}>{item.date}       (신청 인원:{item.current_number})</Text>
+                                        <View flexDirection='row'>
+                                            {/* <Text style={styles.dateText}>{item.date}       (신청 인원:{item.current_number})</Text>
                                             {item.applicant.map((value,index) => {
                                                 return <Text key = {index} style={styles.agencyText}>봉사자 {index+1}. {value.slice(4,)}</Text>
                                             })}
-                                            <Text> </Text>
+                                            <Text> </Text> */}
+                                            <View width="35%" style={{paddingLeft: Math.round(Dimensions.get('window').width)/6,}}>
+                                               
+                                                    <Text style={{  fontSize:20, fontWeight:'800', color:'#D3E1F8', }}>
+                                                        {item.date.slice(5,7)}</Text><Text style={styles.dateText}>   {item.date.slice(8,10)}
+                                                        </Text>
+                                                
+                                            </View>
+                                            <View width="45%" style={{ paddingTop:7, marginBottom:7, paddingLeft: Math.round(Dimensions.get('window').width)/15}}>
+                                                
+                                                
+                                                   
+                                                    {item.applicant.map((value,index) => {
+                                                        return <Text style={{alignSelf: 'flex-end'}} key = {index} style={styles.agencyText}>봉사자 {index+1}. {value.slice(4,)}</Text>
+                                                    })}
+                                                
+                                            </View>
                                         </View>  
                                         
                                         
@@ -261,7 +278,7 @@ const styles = StyleSheet.create({
         paddingTop: 30,
         paddingBottom: 0,
         alignContent: 'center',
-        paddingLeft:Math.round(Dimensions.get('window').width)/6,
+       
         //marginTop: 3,
         //width: screenWidth / 2 - 30,
         //marginRight: 20      
@@ -277,19 +294,21 @@ const styles = StyleSheet.create({
     },
 
     agencyText: {
+        
         fontSize:16,
-        paddingLeft:Math.round(Dimensions.get('window').width)/10,
+        // paddingLeft:Math.round(Dimensions.get('window').width)/10,
     },
 
     dateText: {
-        fontSize:18,
-        backgroundColor:'#D3E1F8',
-        paddingLeft:Math.round(Dimensions.get('window').width)/20,
-        alignSelf: 'flex-start'
+        //width:'40%',
+        fontSize:27,
+        fontWeight:'800',
+        marginBottom:5,
+       color:'#FBB9AB'
     },
   
     URLbox: {
-        backgroundColor: '#81BEF7',
+        backgroundColor: '#D3E1F8',
         color: '#FFF',
         height: 50,
         alignItems: 'center',
